@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet } from "react-router-dom";
 import { api } from "../lib/api";
 import type { Settings } from "../types";
 import { FloatingPlayer } from "./FloatingPlayer";
+import { PlatformIcon } from "./PlatformIcon";
 
 const NAV = [
   { to: "/", label: "Home", end: true },
@@ -90,7 +91,13 @@ export function Layout() {
             <ul className="mt-4 space-y-2 text-sm text-fog">
               {SOCIAL.map((s) => {
                 const href = settings?.[s.key];
-                return href ? <li key={s.key}><a href={href} target="_blank" rel="noreferrer" className="transition hover:text-chrome">{s.label}</a></li> : null;
+                return href ? (
+                  <li key={s.key}>
+                    <a href={href} target="_blank" rel="noreferrer" className="flex items-center gap-2 transition hover:text-chrome">
+                      <PlatformIcon name={s.label} className="h-4 w-4 shrink-0" /> {s.label}
+                    </a>
+                  </li>
+                ) : null;
               })}
             </ul>
           </div>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { PlatformIcon } from "../components/PlatformIcon";
 import { Reveal } from "../components/Reveal";
 import { ReleaseCard, toTrack } from "../components/ReleaseCard";
 import { StreamingLinks } from "../components/StreamingLinks";
@@ -147,7 +148,9 @@ export function Home() {
               ["Anghami", settings.anghami], ["SoundCloud", settings.soundcloud], ["YouTube", settings.youtube],
             ] as const).filter(([, h]) => h).map(([label, href]) => (
               <a key={label} href={href} target="_blank" rel="noreferrer"
-                className="rounded-full border border-line px-6 py-3 text-sm font-semibold text-chrome transition hover:border-chrome hover:bg-ink-3">{label} ↗</a>
+                className="flex items-center gap-2 rounded-full border border-line px-6 py-3 text-sm font-semibold text-chrome transition hover:border-chrome hover:bg-ink-3">
+                <PlatformIcon name={label} /> {label}
+              </a>
             ))}
           </div>
         </div>

@@ -105,7 +105,30 @@ body {
   animation: sweep 7s ease-in-out 1.2s infinite;
 }
 
+/* ---------- 3D / depth ---------- */
+/* Interactive tilt (JS sets --rx/--ry/--sc/--tx/--ty/--lx/--ly) */
+.tilt { transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(var(--sc, 1)); transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); transform-style: preserve-3d; }
+.tilt-sheen { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity 0.35s; mix-blend-mode: screen; background: radial-gradient(circle at var(--lx, 50%) var(--ly, 50%), rgba(255, 255, 255, 0.18), transparent 45%); }
+.tilt:hover .tilt-sheen { opacity: 1; }
+/* A layer that floats further toward the viewer than its parent */
+.pop { transform: translate3d(calc(var(--tx, 0) * 16px), calc(var(--ty, 0) * 16px), 60px); transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); will-change: transform; }
+
+@keyframes floatY { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.float-slow { animation: floatY 6.5s ease-in-out infinite; }
+
+/* CSS equalizer bars */
+@keyframes eq { 0%, 100% { transform: scaleY(0.32); } 50% { transform: scaleY(1); } }
+.eq-bar { transform-origin: bottom; animation: eq 0.8s ease-in-out infinite; }
+
+/* Cursor light (desktop) — JS sets --cx/--cy */
+.cursor-glow { position: fixed; inset: 0; z-index: 25; pointer-events: none; mix-blend-mode: screen; background: radial-gradient(360px circle at var(--cx, -300px) var(--cy, -300px), rgba(79, 124, 255, 0.10), rgba(154, 92, 255, 0.05) 42%, transparent 72%); }
+
+/* 3D music card (JS sets --rx/--ry/--sc; hover lifts via --ty2) */
+.card3d { transform: perspective(800px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty2, 0)) scale(var(--sc, 1)); transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s; transform-style: preserve-3d; }
+
 @media (prefers-reduced-motion: reduce) {
-  .aurora, .particle, .sweep { animation: none !important; }
+  .aurora, .particle, .sweep, .float-slow, .eq-bar { animation: none !important; }
   .rise-in, .scale-in { animation: none !important; opacity: 1 !important; transform: none !important; }
+  .tilt, .pop, .card3d { transform: none !important; }
+  .cursor-glow { display: none; }
 }

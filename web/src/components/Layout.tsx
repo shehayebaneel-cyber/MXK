@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet } from "react-router-dom";
 import { api } from "../lib/api";
 import type { Settings } from "../types";
+import { CursorGlow } from "./CursorGlow";
 import { FloatingPlayer } from "./FloatingPlayer";
 import { PlatformIcon } from "./PlatformIcon";
 
@@ -38,6 +39,7 @@ export function Layout() {
 
   return (
     <div className="flex min-h-screen flex-col">
+      <CursorGlow />
       <header className={`nav-in fixed inset-x-0 top-0 z-40 transition-all duration-300 ${scrolled ? "border-b border-line bg-ink/80 backdrop-blur-xl" : "bg-transparent"}`}>
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5 sm:px-6">
           <Link to="/" className="display text-2xl tracking-wide text-chrome">MXK</Link>

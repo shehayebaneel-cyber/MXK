@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { Equalizer } from "../components/Equalizer";
 import { PlatformIcon } from "../components/PlatformIcon";
 import { Reveal } from "../components/Reveal";
 import { ReleaseCard, toTrack } from "../components/ReleaseCard";
 import { StreamingLinks } from "../components/StreamingLinks";
+import { Tilt } from "../components/Tilt";
 import { api, formatDate, mediaUrl } from "../lib/api";
 import { useCountdown } from "../lib/useCountdown";
 import { useMeta } from "../lib/useMeta";
@@ -22,23 +24,27 @@ function Countdown({ target }: { target: string }) {
   return <div className="flex gap-5 sm:gap-8">{cell(t.days, "Days")}{cell(t.hours, "Hrs")}{cell(t.minutes, "Min")}{cell(t.seconds, "Sec")}</div>;
 }
 
-// Compact "latest release" card that floats over the hero portrait.
+// Floating glass "latest release" panel suspended in front of the hero portrait.
 function HeroReleaseCard({ release, unreleased }: { release: Release; unreleased: boolean }) {
   const player = usePlayer();
+  const playing = player.isPlaying && player.current?.id === release.id;
   const links: [keyof Release, string][] = [["spotify", "Spotify"], ["appleMusic", "Apple Music"], ["soundcloud", "SoundCloud"]];
   return (
-    <div className="rise-in mt-4 rounded-2xl border border-line bg-ink-2/85 p-4 backdrop-blur-xl lg:absolute lg:inset-x-4 lg:bottom-4 lg:mt-0" style={{ animationDelay: "0.9s" }}>
+    <div className="rounded-2xl border border-white/10 bg-ink-2/55 p-4 shadow-[0_24px_60px_-18px_rgba(0,0,0,0.8)] ring-1 ring-inset ring-white/5 backdrop-blur-2xl">
       <div className="flex items-center gap-3">
-        <div className="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-ink-3">
+        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-ink-3">
           {mediaUrl(release.artwork) ? <img src={mediaUrl(release.artwork)} alt="" className="h-full w-full object-cover" /> : null}
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-blue">{unreleased ? "Coming soon" : "Latest release"}</p>
+          <div className="flex items-center gap-2">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-blue">{unreleased ? "Coming soon" : "Latest release"}</p>
+            <Equalizer active={!!playing} bars={4} className="h-2.5" />
+          </div>
           <Link to={`/music/${release.slug}`} className="block truncate font-display text-lg leading-tight text-chrome hover:text-blue">{release.title}</Link>
           <p className="truncate text-xs text-fog">{[release.featuredArtists, formatDate(release.releaseDate)].filter(Boolean).join(" · ")}</p>
         </div>
         {release.previewUrl && (
-          <button onClick={() => player.play([toTrack(release)])} aria-label="Play preview" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-chrome text-ink transition hover:scale-105">▶</button>
+          <button onClick={() => (playing ? player.toggle() : player.play([toTrack(release)]))} aria-label="Play preview" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-chrome text-ink transition hover:scale-105">{playing ? "❚❚" : "▶"}</button>
         )}
       </div>
       <div className="mt-3 flex items-center gap-2">
@@ -123,18 +129,29 @@ export function Home() {
             </div>
           </div>
 
-          {/* RIGHT — cinematic visual + featured card */}
-          <div className="scale-in relative mx-auto w-full max-w-sm" style={{ animationDelay: "0.4s" }}>
-            <div className="absolute -inset-5 -z-10 rounded-[2.5rem] bg-gradient-to-tr from-blue/30 via-purple/20 to-transparent blur-3xl" />
-            <div className="relative overflow-hidden rounded-[1.75rem] border border-line shadow-[0_30px_80px_-20px_rgba(79,124,255,0.35)]">
-              {heroVideo ? (
-                <video src={heroVideo} autoPlay muted loop playsInline className="aspect-[4/5] w-full object-cover" />
-              ) : (
-                <img src={heroImage} alt="MXK" className="aspect-[4/5] w-full object-cover object-top" />
+          {/* RIGHT — cinematic 3D visual + floating glass card */}
+          <div className="scale-in relative mx-auto w-full max-w-sm [perspective:1100px]" style={{ animationDelay: "0.4s" }}>
+            {/* blue/purple glow behind, for separation + depth */}
+            <div className="absolute -inset-6 -z-10 rounded-[2.75rem] bg-gradient-to-tr from-blue/35 via-purple/25 to-transparent blur-3xl" />
+            <Tilt className="tilt relative" maxRX={4} maxRY={6} scale={1.02}>
+              <div className="relative overflow-hidden rounded-[1.75rem] border border-white/10 shadow-[0_36px_90px_-24px_rgba(79,124,255,0.45)] float-slow">
+                {heroVideo ? (
+                  <video src={heroVideo} autoPlay muted loop playsInline className="aspect-[4/5] w-full object-cover" />
+                ) : (
+                  <img src={heroImage} alt="MXK" className="aspect-[4/5] w-full object-cover object-top" />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-ink/75 via-transparent to-transparent" />
+                <div className="pointer-events-none absolute inset-0 rounded-[1.75rem] ring-1 ring-inset ring-white/10" />
+                <div className="tilt-sheen" />
+              </div>
+              {featured && (
+                <div className="rise-in mt-4 lg:absolute lg:inset-x-4 lg:bottom-4 lg:mt-0" style={{ animationDelay: "0.9s" }}>
+                  <div className="pop">
+                    <HeroReleaseCard release={featured} unreleased={unreleased} />
+                  </div>
+                </div>
               )}
-              <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
-            </div>
-            {featured && <HeroReleaseCard release={featured} unreleased={unreleased} />}
+            </Tilt>
           </div>
         </div>
 

@@ -21,7 +21,7 @@ function Countdown({ target }: { target: string }) {
       <span className="mt-1 text-[10px] uppercase tracking-widest text-fog">{l}</span>
     </div>
   );
-  return <div className="flex gap-5 sm:gap-8">{cell(t.days, "Days")}{cell(t.hours, "Hrs")}{cell(t.minutes, "Min")}{cell(t.seconds, "Sec")}</div>;
+  return <div className="flex gap-6 sm:gap-10">{cell(t.days, "Days")}{cell(t.hours, "Hrs")}{cell(t.minutes, "Min")}{cell(t.seconds, "Sec")}</div>;
 }
 
 // Floating glass "latest release" panel suspended in front of the hero portrait.
@@ -84,7 +84,7 @@ export function Home() {
   return (
     <div>
       {/* ---------- HERO ---------- */}
-      <section className="relative flex min-h-[92svh] items-center overflow-hidden pt-24">
+      <section className="relative flex min-h-[86svh] items-center overflow-hidden pt-16 sm:min-h-[92svh] sm:pt-24">
         {/* Living background */}
         <div className="absolute inset-0 -z-20 bg-ink" />
         <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
@@ -97,40 +97,40 @@ export function Home() {
           ))}
         </div>
 
-        <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 lg:grid-cols-[1.05fr_0.95fr]">
+        <div className="mx-auto grid w-full max-w-6xl items-center gap-6 px-6 sm:gap-10 lg:grid-cols-[1.05fr_0.95fr]">
           {/* LEFT — text */}
           <div>
-            <p className="rise-in text-sm font-semibold uppercase tracking-[0.3em] text-blue" style={{ animationDelay: "0.05s" }}>Producer • Drummer • DJ</p>
-            <h1 className="mt-4 text-6xl sm:text-7xl lg:text-8xl">
+            <p className="rise-in text-xs font-semibold uppercase tracking-[0.3em] text-blue sm:text-sm" style={{ animationDelay: "0.05s" }}>Producer • Drummer • DJ</p>
+            <h1 className="mt-3 text-5xl sm:mt-4 sm:text-7xl lg:text-8xl">
               <span className="rise-in display sweep block" style={{ animationDelay: "0.15s" }}>MXK <span className="text-fog">//</span></span>
               <span className="rise-in display sweep block" style={{ animationDelay: "0.28s" }}>MAKRAM</span>
             </h1>
-            <p className="rise-in mt-6 max-w-md text-lg leading-relaxed text-fog" style={{ animationDelay: "0.42s" }}>
-              Live drums meet electronic soul — a signature <span className="text-chrome">Arab Melodic House</span> sound, from the roots of Beirut to the clubs of Canada.
+            <p className="rise-in mt-4 max-w-md text-base leading-relaxed text-fog sm:mt-6 sm:text-lg" style={{ animationDelay: "0.42s" }}>
+              Live drums meet electronic soul — <span className="text-chrome">Arab Melodic House</span>, from Beirut to Canada.
             </p>
-            <div className="rise-in mt-8 flex flex-wrap gap-3" style={{ animationDelay: "0.55s" }}>
-              <Link to="/music" className="rounded-full bg-chrome px-7 py-3.5 text-sm font-semibold text-ink transition hover:bg-white">Listen Now</Link>
-              <Link to="/booking" className="rounded-full border border-line px-7 py-3.5 text-sm font-semibold text-chrome transition hover:border-chrome">Book MXK</Link>
+            <div className="rise-in mt-6 flex gap-3 sm:mt-8" style={{ animationDelay: "0.55s" }}>
+              <Link to="/music" className="flex-1 rounded-full bg-chrome py-4 text-center text-sm font-semibold text-ink transition hover:bg-white sm:flex-none sm:px-7 sm:py-3.5">Listen Now</Link>
+              <Link to="/booking" className="flex-1 rounded-full border border-line py-4 text-center text-sm font-semibold text-chrome transition hover:border-chrome sm:flex-none sm:px-7 sm:py-3.5">Book MXK</Link>
             </div>
-            {/* Social proof */}
-            <div className="rise-in mt-8 space-y-3" style={{ animationDelay: "0.7s" }}>
-              <div className="flex flex-wrap items-center gap-2 text-xs">
-                <span className="rounded-full border border-line px-3 py-1 text-fog">📍 Lebanon 🇱🇧 &amp; Canada 🇨🇦</span>
-                <span className="rounded-full border border-line px-3 py-1 text-fog">Producer</span>
-                <span className="rounded-full border border-line px-3 py-1 text-fog">Drummer</span>
-                <span className="rounded-full border border-line px-3 py-1 text-fog">DJ</span>
+            {/* Social proof — horizontally scrollable on mobile */}
+            <div className="rise-in mt-6 space-y-3 sm:mt-8" style={{ animationDelay: "0.7s" }}>
+              <div className="no-bar -mx-6 flex items-center gap-2 overflow-x-auto px-6 text-xs sm:mx-0 sm:flex-wrap sm:px-0">
+                <span className="shrink-0 whitespace-nowrap rounded-full border border-line px-3 py-1.5 text-fog">📍 Lebanon 🇱🇧 &amp; Canada 🇨🇦</span>
+                <span className="shrink-0 rounded-full border border-line px-3 py-1.5 text-fog">Producer</span>
+                <span className="shrink-0 rounded-full border border-line px-3 py-1.5 text-fog">Drummer</span>
+                <span className="shrink-0 rounded-full border border-line px-3 py-1.5 text-fog">DJ</span>
               </div>
-              <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-fog">
-                <span className="uppercase tracking-widest text-fog/70">Streaming on</span>
+              <div className="no-bar -mx-6 flex items-center gap-3 overflow-x-auto px-6 text-xs text-fog sm:mx-0 sm:flex-wrap sm:px-0">
+                <span className="shrink-0 uppercase tracking-widest text-fog/70">Streaming on</span>
                 {["Spotify", "Apple Music", "SoundCloud", "Anghami", "YouTube"].map((n) => (
-                  <span key={n} className="inline-flex items-center gap-1 text-chrome/80"><PlatformIcon name={n} className="h-3.5 w-3.5" /> {n}</span>
+                  <span key={n} className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-chrome/80"><PlatformIcon name={n} className="h-3.5 w-3.5" /> {n}</span>
                 ))}
-              </p>
+              </div>
             </div>
           </div>
 
           {/* RIGHT — cinematic 3D visual + floating glass card */}
-          <div className="scale-in relative mx-auto w-full max-w-sm [perspective:1100px]" style={{ animationDelay: "0.4s" }}>
+          <div className="scale-in relative mx-auto w-[94%] max-w-[27rem] [perspective:1100px] sm:w-full sm:max-w-sm" style={{ animationDelay: "0.4s" }}>
             {/* blue/purple glow behind, for separation + depth */}
             <div className="absolute -inset-6 -z-10 rounded-[2.75rem] bg-gradient-to-tr from-blue/35 via-purple/25 to-transparent blur-3xl" />
             <Tilt className="tilt relative" maxRX={4} maxRY={6} scale={1.02}>
@@ -145,7 +145,7 @@ export function Home() {
                 <div className="tilt-sheen" />
               </div>
               {featured && (
-                <div className="rise-in mt-4 lg:absolute lg:inset-x-4 lg:bottom-4 lg:mt-0" style={{ animationDelay: "0.9s" }}>
+                <div className="rise-in relative z-20 mx-3 -mt-14 lg:absolute lg:inset-x-4 lg:bottom-4 lg:mx-0 lg:mt-0" style={{ animationDelay: "0.9s" }}>
                   <div className="pop">
                     <HeroReleaseCard release={featured} unreleased={unreleased} />
                   </div>
@@ -161,9 +161,9 @@ export function Home() {
 
       {/* ---------- LATEST RELEASE (detail + countdown) ---------- */}
       {featured && (
-        <section className="relative overflow-hidden border-t border-line py-20 sm:py-28">
+        <section className="relative overflow-hidden border-t border-line py-14 sm:py-28">
           <div className="glow absolute inset-0 -z-10 opacity-60" />
-          <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 lg:grid-cols-2">
+          <div className="mx-auto grid max-w-6xl items-center gap-8 px-6 sm:gap-10 lg:grid-cols-2">
             <Reveal>
               <div className="relative mx-auto aspect-square w-full max-w-md overflow-hidden rounded-3xl border border-line bg-ink-3 shadow-2xl">
                 {mediaUrl(featured.artwork) ? <img src={mediaUrl(featured.artwork)} alt={featured.title} className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-fog">MXK</div>}
@@ -179,11 +179,11 @@ export function Home() {
                 {unreleased ? (
                   <div className="space-y-6">
                     <Countdown target={featured.releaseDate} />
-                    <a href={featured.spotify || settings?.spotify || "#"} target="_blank" rel="noreferrer" className="inline-flex rounded-full bg-gradient-to-r from-blue to-purple px-8 py-3.5 text-sm font-semibold text-white transition hover:opacity-90">Pre-Save on Spotify</a>
+                    <a href={featured.spotify || settings?.spotify || "#"} target="_blank" rel="noreferrer" className="flex w-full justify-center rounded-full bg-gradient-to-r from-blue to-purple px-8 py-4 text-sm font-semibold text-white transition hover:opacity-90 sm:inline-flex sm:w-auto sm:py-3.5">Pre-Save on Spotify</a>
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {featured.previewUrl && <button onClick={() => player.play([toTrack(featured)])} className="rounded-full bg-chrome px-8 py-3.5 text-sm font-semibold text-ink transition hover:bg-white">▶ Play preview</button>}
+                    {featured.previewUrl && <button onClick={() => player.play([toTrack(featured)])} className="w-full rounded-full bg-chrome px-8 py-4 text-sm font-semibold text-ink transition hover:bg-white sm:w-auto sm:py-3.5">▶ Play preview</button>}
                     <StreamingLinks release={featured} />
                   </div>
                 )}
@@ -195,13 +195,23 @@ export function Home() {
 
       {/* ---------- LATEST MUSIC RAIL ---------- */}
       {latest.length > 0 && (
-        <section className="border-t border-line py-20 sm:py-24">
+        <section className="border-t border-line py-14 sm:py-24">
           <div className="mx-auto max-w-6xl px-6">
             <div className="flex items-end justify-between">
               <Reveal><h2 className="display text-4xl text-chrome sm:text-5xl">The Music</h2></Reveal>
               <Link to="/music" className="text-sm font-semibold text-fog transition hover:text-chrome">View all →</Link>
             </div>
-            <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+            {/* Mobile: one large release + a swipeable carousel of the rest */}
+            <div className="mt-6 sm:hidden">
+              <Reveal>{latest[0] && <ReleaseCard release={latest[0]} />}</Reveal>
+              {latest.length > 1 && (
+                <div className="no-bar -mx-6 mt-4 flex gap-4 overflow-x-auto px-6 pb-2">
+                  {latest.slice(1).map((r) => <div key={r.id} className="w-44 shrink-0"><ReleaseCard release={r} /></div>)}
+                </div>
+              )}
+            </div>
+            {/* Desktop grid */}
+            <div className="mt-8 hidden gap-4 sm:grid sm:grid-cols-3 lg:grid-cols-6">
               {latest.map((r, i) => <Reveal key={r.id} delay={i * 60}><ReleaseCard release={r} /></Reveal>)}
             </div>
           </div>
@@ -209,18 +219,18 @@ export function Home() {
       )}
 
       {/* ---------- SOCIAL HUB ---------- */}
-      <section className="border-t border-line py-20">
+      <section className="border-t border-line py-14 sm:py-20">
         <div className="mx-auto max-w-6xl px-6 text-center">
           <Reveal>
             <h2 className="display text-4xl text-chrome sm:text-5xl">Enter MXK's World</h2>
             <p className="mx-auto mt-3 max-w-lg text-fog">Follow the journey and listen everywhere.</p>
           </Reveal>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <div className="no-bar -mx-6 mt-8 flex gap-3 overflow-x-auto px-6 sm:mx-0 sm:flex-wrap sm:justify-center sm:overflow-visible">
             {settings && ([
               ["Instagram", settings.instagram], ["Spotify", settings.spotify], ["Apple Music", settings.appleMusic],
               ["Anghami", settings.anghami], ["SoundCloud", settings.soundcloud], ["YouTube", settings.youtube],
             ] as const).filter(([, h]) => h).map(([label, href]) => (
-              <a key={label} href={href} target="_blank" rel="noreferrer" className="flex items-center gap-2 rounded-full border border-line px-6 py-3 text-sm font-semibold text-chrome transition hover:border-chrome hover:bg-ink-3">
+              <a key={label} href={href} target="_blank" rel="noreferrer" className="flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border border-line px-6 py-3 text-sm font-semibold text-chrome transition hover:border-chrome hover:bg-ink-3">
                 <PlatformIcon name={label} /> {label}
               </a>
             ))}

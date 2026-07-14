@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Reveal } from "../components/Reveal";
-import { api } from "../lib/api";
+import { api, mediaUrl } from "../lib/api";
 import { useMeta } from "../lib/useMeta";
 import type { Settings } from "../types";
 
@@ -25,11 +25,17 @@ export function About() {
       <p className="text-sm font-semibold uppercase tracking-[0.3em] text-blue">About</p>
       <h1 className="display mt-3 text-6xl text-chrome sm:text-7xl">MXK // MAKRAM</h1>
 
-      <div className="mt-6 flex flex-wrap gap-2">
-        {TAGS.map((t) => <span key={t} className="rounded-full border border-line px-4 py-1.5 text-sm text-fog">{t}</span>)}
+      <div className="mt-8 grid gap-8 sm:grid-cols-[220px_1fr] sm:items-start">
+        {mediaUrl(settings?.heroImage) && (
+          <img src={mediaUrl(settings?.heroImage)} alt="MXK" className="aspect-square w-full rounded-2xl border border-line object-cover" />
+        )}
+        <div>
+          <div className="flex flex-wrap gap-2">
+            {TAGS.map((t) => <span key={t} className="rounded-full border border-line px-4 py-1.5 text-sm text-fog">{t}</span>)}
+          </div>
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-fog">{settings?.bio}</p>
+        </div>
       </div>
-
-      <p className="mt-8 max-w-2xl text-lg leading-relaxed text-fog">{settings?.bio}</p>
 
       <div className="mt-14">
         <h2 className="display text-3xl text-chrome">The Journey</h2>

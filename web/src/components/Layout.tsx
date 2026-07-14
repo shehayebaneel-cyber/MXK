@@ -18,8 +18,8 @@ const SOCIAL: { key: keyof Settings; label: string }[] = [
   { key: "instagram", label: "Instagram" },
   { key: "spotify", label: "Spotify" },
   { key: "appleMusic", label: "Apple Music" },
+  { key: "anghami", label: "Anghami" },
   { key: "soundcloud", label: "SoundCloud" },
-  { key: "beatport", label: "Beatport" },
   { key: "youtube", label: "YouTube" },
 ];
 

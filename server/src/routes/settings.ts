@@ -7,6 +7,7 @@ export const settingsRouter = Router();
 // Defaults so the site renders before the admin customizes anything.
 export const DEFAULT_SETTINGS: Record<string, string> = {
   heroVideo: "",
+  heroImage: "",
   heroTitle: "MXK // MAKRAM",
   heroTagline: "Producer • Drummer • DJ",
   bio: "MXK (Makram) is a producer, drummer and DJ moving between Lebanon and Canada — blending live percussion with electronic production and a growing Arabic House sound.",
@@ -14,6 +15,7 @@ export const DEFAULT_SETTINGS: Record<string, string> = {
   spotify: "",
   appleMusic: "",
   soundcloud: "",
+  anghami: "",
   beatport: "",
   youtube: "",
   bookingEmail: "",

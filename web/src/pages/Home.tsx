@@ -40,6 +40,7 @@ export function Home() {
 
   const unreleased = featured && new Date(featured.releaseDate).getTime() > Date.now();
   const heroVideo = mediaUrl(settings?.heroVideo);
+  const heroImage = mediaUrl(settings?.heroImage);
 
   return (
     <div>
@@ -48,10 +49,14 @@ export function Home() {
         <div className="absolute inset-0 -z-10">
           {heroVideo ? (
             <video src={heroVideo} autoPlay muted loop playsInline className="h-full w-full object-cover opacity-60" />
+          ) : heroImage ? (
+            <img src={heroImage} alt="" className="h-full w-full object-cover object-center opacity-70" />
           ) : (
             <div className="glow h-full w-full" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-b from-ink/40 via-ink/30 to-ink" />
+          <div className="glow absolute inset-0 opacity-40" />
+          <div className="absolute inset-0 bg-gradient-to-b from-ink/50 via-ink/40 to-ink" />
+          <div className="absolute inset-0 bg-gradient-to-r from-ink/70 via-transparent to-transparent" />
         </div>
         <div className="mx-auto w-full max-w-6xl px-6">
           <p className="text-sm font-semibold uppercase tracking-[0.3em] text-blue">Producer • Drummer • DJ</p>
@@ -94,9 +99,10 @@ export function Home() {
                 {unreleased ? (
                   <div className="space-y-6">
                     <Countdown target={featured.releaseDate} />
-                    <button className="rounded-full bg-gradient-to-r from-blue to-purple px-8 py-3.5 text-sm font-semibold text-white transition hover:opacity-90">
-                      Pre-Save
-                    </button>
+                    <a href={featured.spotify || settings?.spotify || "#"} target="_blank" rel="noreferrer"
+                      className="inline-flex rounded-full bg-gradient-to-r from-blue to-purple px-8 py-3.5 text-sm font-semibold text-white transition hover:opacity-90">
+                      Pre-Save on Spotify
+                    </a>
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -138,7 +144,7 @@ export function Home() {
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             {settings && ([
               ["Instagram", settings.instagram], ["Spotify", settings.spotify], ["Apple Music", settings.appleMusic],
-              ["SoundCloud", settings.soundcloud], ["Beatport", settings.beatport], ["YouTube", settings.youtube],
+              ["Anghami", settings.anghami], ["SoundCloud", settings.soundcloud], ["YouTube", settings.youtube],
             ] as const).filter(([, h]) => h).map(([label, href]) => (
               <a key={label} href={href} target="_blank" rel="noreferrer"
                 className="rounded-full border border-line px-6 py-3 text-sm font-semibold text-chrome transition hover:border-chrome hover:bg-ink-3">{label} ↗</a>

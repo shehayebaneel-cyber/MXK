@@ -43,6 +43,7 @@ export interface ArchiveItem {
 
 export interface Settings {
   heroVideo: string;
+  heroImage: string;
   heroTitle: string;
   heroTagline: string;
   bio: string;
@@ -50,6 +51,7 @@ export interface Settings {
   spotify: string;
   appleMusic: string;
   soundcloud: string;
+  anghami: string;
   beatport: string;
   youtube: string;
   bookingEmail: string;

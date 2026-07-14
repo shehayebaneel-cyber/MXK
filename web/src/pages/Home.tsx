@@ -84,7 +84,7 @@ export function Home() {
   return (
     <div>
       {/* ---------- HERO ---------- */}
-      <section className="relative flex min-h-[92svh] items-center overflow-hidden pt-24">
+      <section className="relative flex min-h-[88svh] items-center overflow-hidden pt-20 sm:min-h-[92svh] sm:pt-24">
         {/* Living background */}
         <div className="absolute inset-0 -z-20 bg-ink" />
         <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
@@ -101,9 +101,9 @@ export function Home() {
           {/* LEFT — text */}
           <div>
             <p className="rise-in text-sm font-semibold uppercase tracking-[0.3em] text-blue" style={{ animationDelay: "0.05s" }}>Producer • Drummer • DJ</p>
-            <h1 className="mt-4 text-6xl sm:text-7xl lg:text-8xl">
-              <span className="rise-in display sweep block" style={{ animationDelay: "0.15s" }}>MXK <span className="text-fog">//</span></span>
-              <span className="rise-in display sweep block" style={{ animationDelay: "0.28s" }}>MAKRAM</span>
+            <h1 className="mt-3 text-6xl text-chrome sm:mt-4 sm:text-7xl lg:text-8xl">
+              <span className="rise-in display block" style={{ animationDelay: "0.15s" }}>MXK <span className="text-fog">//</span></span>
+              <span className="rise-in display block" style={{ animationDelay: "0.28s" }}>MAKRAM</span>
             </h1>
             <p className="rise-in mt-6 max-w-md text-lg leading-relaxed text-fog" style={{ animationDelay: "0.42s" }}>
               Live drums meet electronic soul — a signature <span className="text-chrome">Arab Melodic House</span> sound, from the roots of Beirut to the clubs of Canada.

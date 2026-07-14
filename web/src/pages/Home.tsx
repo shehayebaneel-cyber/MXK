@@ -10,7 +10,7 @@ import { api, formatDate, mediaUrl } from "../lib/api";
 import { useCountdown } from "../lib/useCountdown";
 import { useMeta } from "../lib/useMeta";
 import { usePlayer } from "../player/PlayerContext";
-import type { Release, Settings } from "../types";
+import type { MXKEvent, Release, Settings } from "../types";
 
 function Countdown({ target }: { target: string }) {
   const t = useCountdown(target);
@@ -22,6 +22,31 @@ function Countdown({ target }: { target: string }) {
     </div>
   );
   return <div className="flex gap-6 sm:gap-10">{cell(t.days, "Days")}{cell(t.hours, "Hrs")}{cell(t.minutes, "Min")}{cell(t.seconds, "Sec")}</div>;
+}
+
+// Compact upcoming-show card for the homepage Live strip.
+function ShowCard({ e }: { e: MXKEvent }) {
+  const d = new Date(e.date);
+  const month = d.toLocaleString("en-US", { month: "short" }).toUpperCase();
+  const day = String(d.getDate()).padStart(2, "0");
+  const hasTickets = e.ticketsEnabled || !!e.ticketUrl;
+  return (
+    <Link to={`/live/${e.slug}`} className="group relative flex items-center gap-4 overflow-hidden rounded-2xl border border-line bg-ink-2/40 p-3 transition hover:border-white/20 hover:bg-ink-2 sm:p-4">
+      {/* date chip */}
+      <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-xl border border-line bg-ink-3 sm:h-20 sm:w-20">
+        <span className="text-[10px] font-bold uppercase tracking-widest text-blue">{month}</span>
+        <span className="display text-2xl leading-none text-chrome sm:text-3xl">{day}</span>
+      </div>
+      <div className="min-w-0 flex-1">
+        <h3 className="truncate font-display text-xl leading-tight text-chrome sm:text-2xl">{e.title}</h3>
+        <p className="mt-0.5 truncate text-sm text-fog">{[e.venue, e.city].filter(Boolean).join(" · ")}</p>
+        <div className="mt-2 flex items-center gap-2 text-xs">
+          {hasTickets && <span className="rounded-full bg-chrome px-2.5 py-1 font-semibold text-ink">🎟 Tickets</span>}
+          <span className="font-semibold uppercase tracking-widest text-fog transition group-hover:text-chrome">Details →</span>
+        </div>
+      </div>
+    </Link>
+  );
 }
 
 // Floating glass "latest release" panel suspended in front of the hero portrait.
@@ -64,12 +89,14 @@ export function Home() {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [featured, setFeatured] = useState<Release | null>(null);
   const [latest, setLatest] = useState<Release[]>([]);
+  const [shows, setShows] = useState<MXKEvent[]>([]);
   const player = usePlayer();
 
   useEffect(() => {
     api.get<Settings>("/api/settings").then(setSettings).catch(() => {});
     api.get<Release | null>("/api/releases/featured").then(setFeatured).catch(() => {});
     api.get<Release[]>("/api/releases").then((r) => setLatest(r.slice(0, 6))).catch(() => {});
+    api.get<{ upcoming: MXKEvent[] }>("/api/events").then((d) => setShows((d.upcoming || []).slice(0, 4))).catch(() => {});
   }, []);
 
   const unreleased = !!featured && new Date(featured.releaseDate).getTime() > Date.now();
@@ -106,7 +133,7 @@ export function Home() {
               <span className="rise-in display block" style={{ animationDelay: "0.28s" }}>MAKRAM</span>
             </h1>
             <p className="rise-in mt-4 max-w-md text-base leading-relaxed text-fog sm:mt-6 sm:text-lg" style={{ animationDelay: "0.42s" }}>
-              Live drums meet electronic soul — <span className="text-chrome">Arab Melodic House</span>, from Beirut to Canada.
+              Live drums meet electronic soul — <span className="whitespace-nowrap text-chrome">Arab Melodic House</span>, from Beirut to Canada.
             </p>
             <div className="rise-in mt-6 flex gap-3 sm:mt-8" style={{ animationDelay: "0.55s" }}>
               <Link to="/music" className="flex-1 rounded-full bg-chrome py-4 text-center text-sm font-semibold text-ink transition hover:bg-white sm:flex-none sm:px-7 sm:py-3.5">Listen Now</Link>
@@ -156,8 +183,8 @@ export function Home() {
           </div>
         </div>
 
-        {/* Scroll cue */}
-        <div className="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 text-xs uppercase tracking-widest text-fog pulse">Scroll ↓</div>
+        {/* Scroll cue — desktop only; on mobile it collided with the release card */}
+        <div className="pointer-events-none absolute bottom-5 left-1/2 hidden -translate-x-1/2 text-xs uppercase tracking-widest text-fog pulse lg:block">Scroll ↓</div>
       </section>
 
       {/* ---------- LATEST RELEASE (detail + countdown) ---------- */}
@@ -204,6 +231,25 @@ export function Home() {
             </div>
             <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
               {latest.map((r, i) => <Reveal key={r.id} delay={i * 60}><ReleaseCard release={r} /></Reveal>)}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ---------- LIVE / UPCOMING SHOWS ---------- */}
+      {shows.length > 0 && (
+        <section className="relative overflow-hidden border-t border-line py-14 sm:py-24">
+          <div className="glow absolute inset-0 -z-10 opacity-40" />
+          <div className="mx-auto max-w-6xl px-6">
+            <div className="flex items-end justify-between">
+              <Reveal>
+                <p className="text-sm font-semibold uppercase tracking-[0.3em] text-blue">On Stage</p>
+                <h2 className="display mt-2 text-4xl text-chrome sm:text-5xl">Catch MXK Live</h2>
+              </Reveal>
+              <Link to="/live" className="shrink-0 text-sm font-semibold text-fog transition hover:text-chrome">All shows →</Link>
+            </div>
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              {shows.map((e, i) => <Reveal key={e.id} delay={i * 60}><ShowCard e={e} /></Reveal>)}
             </div>
           </div>
         </section>

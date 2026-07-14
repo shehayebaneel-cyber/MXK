@@ -23,6 +23,14 @@ services:
         sync: false
       - key: ADMIN_NAME
         value: MXK
+      - key: FRONTEND_URL
+        value: https://mxk-web.onrender.com
+      # Stripe — leave blank until MXK is ready to take card payments.
+      # With no STRIPE_SECRET_KEY, ticketing falls back to reserve/RSVP.
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
       - key: NODE_VERSION
         value: "22.11.0"
 

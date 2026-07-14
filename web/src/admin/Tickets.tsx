@@ -36,6 +36,7 @@ export function AdminTickets() {
               <p className="truncate font-semibold text-chrome">
                 {t.name} · {t.quantity}× <span className="text-fog">→ {t.eventTitle}</span>
                 <span className={`ml-2 text-xs font-bold ${COLOR[t.status]}`}>{t.status}</span>
+                {t.paid && <span className="ml-2 rounded bg-[#39d98a]/15 px-1.5 py-0.5 text-[10px] font-bold text-[#39d98a]">PAID ${t.amountPaid.toFixed(0)}</span>}
               </p>
               <p className="truncate text-xs text-fog">
                 <span className="text-blue">{t.reference}</span> · <a href={`mailto:${t.email}`} className="underline hover:text-chrome">{t.email}</a>

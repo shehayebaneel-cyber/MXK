@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { api, formatDate, mediaUrl } from "../lib/api";
 import { useMeta } from "../lib/useMeta";
 import type { MXKEvent } from "../types";
@@ -19,10 +19,12 @@ function TicketModal({ event, onClose }: { event: MXKEvent; onClose: () => void 
     if (!form.name.trim() || !form.email.trim()) { setErr("Name and email are required."); return; }
     setState("sending"); setErr("");
     try {
-      const r = await api.post<{ reference: string; quantity: number }>(`/api/events/${event.slug}/tickets`, form);
-      setDone(r); setState("done");
+      const r = await api.post<{ checkout?: boolean; url?: string; reference?: string; quantity?: number }>(`/api/events/${event.slug}/tickets`, form);
+      if (r.checkout && r.url) { window.location.href = r.url; return; } // → Stripe Checkout
+      setDone({ reference: r.reference!, quantity: r.quantity! }); setState("done");
     } catch (e) { setErr(e instanceof Error ? e.message : "Couldn't reserve."); setState("error"); }
   }
+  const payOnline = !!event.paymentsOnline;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/80 p-4 backdrop-blur-sm" onClick={onClose}>
@@ -62,9 +64,11 @@ function TicketModal({ event, onClose }: { event: MXKEvent; onClose: () => void 
                 </label>
                 {err && <p className="text-sm text-red">{err}</p>}
                 <button disabled={state === "sending"} className="w-full rounded-full bg-chrome px-6 py-3 text-sm font-semibold text-ink transition hover:bg-white disabled:opacity-60">
-                  {state === "sending" ? "Reserving…" : `Reserve ${form.quantity} ticket${form.quantity > 1 ? "s" : ""}`}
+                  {state === "sending" ? (payOnline ? "Redirecting to payment…" : "Reserving…")
+                    : payOnline ? `Pay $${(event.ticketPrice * form.quantity).toFixed(0)} · ${form.quantity} ticket${form.quantity > 1 ? "s" : ""}`
+                      : `Reserve ${form.quantity} ticket${form.quantity > 1 ? "s" : ""}`}
                 </button>
-                <p className="text-center text-xs text-fog">No payment now — reserve your spot{event.ticketPrice > 0 ? " and pay at the door" : ""}.</p>
+                <p className="text-center text-xs text-fog">{payOnline ? "Secure card payment via Stripe." : `No payment now — reserve your spot${event.ticketPrice > 0 ? " and pay at the door" : ""}.`}</p>
               </form>
             )}
           </>
@@ -80,12 +84,25 @@ export function EventDetail() {
   const [missing, setMissing] = useState(false);
   const [lightbox, setLightbox] = useState<string | null>(null);
   const [tickets, setTickets] = useState(false);
+  const [params, setParams] = useSearchParams();
+  const [paid, setPaid] = useState<{ reference: string; quantity: number; title: string } | null>(null);
+  const canceled = params.get("ticket_canceled") === "1";
 
   useEffect(() => {
     if (!slug) return;
     setE(null); setMissing(false);
     api.get<MXKEvent>(`/api/events/${slug}`).then(setE).catch(() => setMissing(true));
   }, [slug]);
+
+  // Returning from Stripe Checkout: verify the payment and confirm the ticket.
+  useEffect(() => {
+    const sid = params.get("session_id");
+    if (!sid) return;
+    api.post<{ paid: boolean; reference?: string; quantity?: number; title?: string }>("/api/stripe/confirm", { sessionId: sid })
+      .then((r) => { if (r.paid) setPaid({ reference: r.reference!, quantity: r.quantity!, title: r.title! }); })
+      .catch(() => {})
+      .finally(() => { params.delete("session_id"); setParams(params, { replace: true }); });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useMeta(e ? `${e.title} — MXK Live` : "MXK Live", e?.description || undefined);
 
@@ -154,6 +171,22 @@ export function EventDetail() {
               <iframe src={v} title={`video-${i}`} className="h-full w-full" allowFullScreen />
             </div>
           ))}
+        </div>
+      )}
+
+      {canceled && !paid && (
+        <p className="mt-6 rounded-xl border border-line bg-ink-2 px-4 py-3 text-sm text-fog">Payment canceled — you can try again anytime.</p>
+      )}
+
+      {paid && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/80 p-4 backdrop-blur-sm" onClick={() => setPaid(null)}>
+          <div className="w-full max-w-md rounded-2xl border border-line bg-ink-2 p-6 text-center" onClick={(ev) => ev.stopPropagation()}>
+            <p className="display text-3xl text-chrome">Payment successful 🎟</p>
+            <p className="mt-3 text-fog">{paid.quantity} ticket{paid.quantity > 1 ? "s" : ""} confirmed for <b className="text-chrome">{paid.title}</b>.</p>
+            <p className="mt-4 rounded-lg bg-ink-3 px-4 py-3 text-sm text-fog">Your reference<br /><span className="display text-2xl text-blue">{paid.reference}</span></p>
+            <p className="mt-3 text-xs text-fog">A receipt was emailed by Stripe. Show this reference at the door.</p>
+            <button onClick={() => setPaid(null)} className="mt-5 w-full rounded-full bg-chrome px-6 py-3 text-sm font-semibold text-ink">Done</button>
+          </div>
         </div>
       )}
 

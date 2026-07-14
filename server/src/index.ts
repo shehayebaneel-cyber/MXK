@@ -7,6 +7,7 @@ import { bookingsRouter } from "./routes/bookings";
 import { eventsRouter } from "./routes/events";
 import { releasesRouter } from "./routes/releases";
 import { settingsRouter } from "./routes/settings";
+import { stripeRouter, stripeWebhook } from "./routes/stripe";
 import { ticketsRouter } from "./routes/tickets";
 import { uploadsRouter } from "./routes/uploads";
 
@@ -17,6 +18,8 @@ process.on("uncaughtException", (e) => console.error("uncaughtException:", e));
 
 const app = express();
 app.use(cors());
+// Stripe webhook needs the RAW body for signature verification — mount before JSON.
+app.post("/api/stripe/webhook", express.raw({ type: "application/json" }), stripeWebhook);
 app.use(express.json({ limit: "12mb" }));
 
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
@@ -26,6 +29,7 @@ app.use("/api/events", eventsRouter);
 app.use("/api/archive", archiveRouter);
 app.use("/api/bookings", bookingsRouter);
 app.use("/api/tickets", ticketsRouter);
+app.use("/api/stripe", stripeRouter);
 app.use("/api/settings", settingsRouter);
 app.use("/api/uploads", uploadsRouter);
 

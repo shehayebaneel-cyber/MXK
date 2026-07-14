@@ -2,6 +2,7 @@ import { Router } from "express";
 import { requireAdmin } from "../auth";
 import { prisma } from "../db";
 import { outEvent, slugify, toJsonArr } from "../lib/helpers";
+import { siteBase, stripe } from "../lib/stripe";
 
 export const eventsRouter = Router();
 
@@ -42,7 +43,8 @@ eventsRouter.get("/:slug", async (req, res) => {
   if (!event) return res.status(404).json({ error: "Event not found." });
   const sold = event.ticketsEnabled ? await ticketsSold(event.id) : 0;
   const ticketsLeft = event.ticketCapacity > 0 ? Math.max(0, event.ticketCapacity - sold) : null;
-  res.json({ ...outEvent(event), ticketsSold: sold, ticketsLeft });
+  const paymentsOnline = !!stripe && event.ticketsEnabled && event.ticketPrice > 0; // Stripe live + paid show
+  res.json({ ...outEvent(event), ticketsSold: sold, ticketsLeft, paymentsOnline });
 });
 
 // POST /api/events/:slug/tickets  (public) — reserve tickets for a show.
@@ -66,9 +68,33 @@ eventsRouter.post("/:slug/tickets", async (req, res) => {
   }
 
   const reference = `TKT-${Math.floor(1000 + Math.random() * 9000)}-${event.id}`;
-  await prisma.ticketRequest.create({
+  const ticket = await prisma.ticketRequest.create({
     data: { reference, eventId: event.id, eventTitle: event.title, name, email, phone: String(b.phone ?? "").trim(), quantity },
   });
+
+  // Paid show + Stripe configured → hand off to Stripe Checkout. Otherwise it's
+  // a free reserve/RSVP that MXK confirms manually (pay at the door).
+  if (stripe && event.ticketPrice > 0) {
+    const base = siteBase(req.headers.origin as string | undefined);
+    const session = await stripe.checkout.sessions.create({
+      mode: "payment",
+      customer_email: email,
+      line_items: [{
+        quantity,
+        price_data: {
+          currency: "cad",
+          unit_amount: Math.round(event.ticketPrice * 100),
+          product_data: { name: `${event.title} — Ticket`, description: [event.venue, event.city].filter(Boolean).join(", ") || undefined },
+        },
+      }],
+      success_url: `${base}/live/${event.slug}?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${base}/live/${event.slug}?ticket_canceled=1`,
+      metadata: { ticketId: String(ticket.id), reference, eventId: String(event.id) },
+    });
+    await prisma.ticketRequest.update({ where: { id: ticket.id }, data: { stripeSessionId: session.id } });
+    return res.status(201).json({ checkout: true, url: session.url });
+  }
+
   res.status(201).json({ ok: true, reference, quantity, title: event.title });
 });
 

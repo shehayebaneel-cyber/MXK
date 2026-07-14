@@ -36,6 +36,7 @@ export interface MXKEvent {
   ticketNote: string;
   ticketsSold?: number;
   ticketsLeft?: number | null;
+  paymentsOnline?: boolean;
 }
 
 export interface TicketRequest {
@@ -48,6 +49,8 @@ export interface TicketRequest {
   phone: string;
   quantity: number;
   status: "PENDING" | "CONFIRMED" | "CANCELLED";
+  paid: boolean;
+  amountPaid: number;
   createdAt: string;
 }
 

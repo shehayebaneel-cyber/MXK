@@ -50,7 +50,11 @@ body {
 .no-bar { scrollbar-width: none; }
 .no-bar::-webkit-scrollbar { display: none; }
 
-a { color: inherit; text-decoration: none; }
+/* Keep this in @layer base so text-* color utilities (e.g. text-ink on a
+   white button) still win over it — an un-layered rule would override them. */
+@layer base {
+  a { color: inherit; text-decoration: none; }
+}
 
 @keyframes pulse-ring { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
 .pulse { animation: pulse-ring 2.4s ease-in-out infinite; }

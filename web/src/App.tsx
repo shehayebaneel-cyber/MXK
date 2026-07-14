@@ -1,4 +1,12 @@
 import { Navigate, Route, Routes } from "react-router-dom";
+import { AdminArchive } from "./admin/ArchiveAdmin";
+import { AdminBookings } from "./admin/Bookings";
+import { AdminDashboard } from "./admin/Dashboard";
+import { AdminEvents } from "./admin/Events";
+import { AdminLayout } from "./admin/AdminLayout";
+import { AdminLogin } from "./admin/Login";
+import { AdminReleases } from "./admin/Releases";
+import { AdminSettings } from "./admin/SettingsAdmin";
 import { Layout } from "./components/Layout";
 import { ScrollToTop } from "./components/ScrollToTop";
 import { About } from "./pages/About";
@@ -28,8 +36,20 @@ export default function App() {
           <Route path="/about" element={<About />} />
           <Route path="/epk" element={<EPK />} />
           <Route path="/booking" element={<Booking />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
+
+        {/* Admin */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="releases" element={<AdminReleases />} />
+          <Route path="events" element={<AdminEvents />} />
+          <Route path="archive" element={<AdminArchive />} />
+          <Route path="bookings" element={<AdminBookings />} />
+          <Route path="settings" element={<AdminSettings />} />
+        </Route>
+
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   );

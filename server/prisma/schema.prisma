@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// A music release — the core content unit. Each has its own SEO URL /music/<slug>.
+model Release {
+  id             Int      @id @default(autoincrement())
+  slug           String   @unique
+  title          String
+  type           String   @default("SINGLE") // SINGLE | ALBUM | REMIX | COLLAB | ARABIC_HOUSE
+  artwork        String? // cover image URL
+  releaseDate    DateTime
+  featuredArtists String  @default("") // "feat. X, Y"
+  description    String   @default("")
+  spotify        String?
+  appleMusic     String?
+  soundcloud     String?
+  youtube        String? // watch/embed URL
+  beatport       String?
+  previewUrl     String? // short audio preview / full track for the floating player
+  embedUrl       String? // e.g. Arabic House embedded video
+  isPublished    Boolean  @default(true)
+  isFeatured     Boolean  @default(false) // the homepage "latest release"
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([type])
+  @@index([releaseDate])
+}
+
+// A live performance. Upcoming vs past is derived from `date`. SEO URL /live/<slug>.
+model Event {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  title       String
+  venue       String   @default("")
+  city        String   @default("")
+  date        DateTime
+  poster      String?
+  description String   @default("")
+  ticketUrl   String?
+  tracklist   String   @default("") // newline-separated
+  photos      String   @default("[]") // JSON array of image URLs
+  videos      String   @default("[]") // JSON array of video URLs/embeds
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  @@index([date])
+}
+
+// Archive media (photos/videos) with filters: Live / Studio / Behind The Scenes.
+model ArchiveItem {
+  id        Int      @id @default(autoincrement())
+  type      String   @default("PHOTO") // PHOTO | VIDEO
+  category  String   @default("LIVE") // LIVE | STUDIO | BTS
+  url       String
+  thumbnail String?
+  caption   String   @default("")
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([category])
+}
+
+// A booking request from the Booking page.
+model Booking {
+  id          Int      @id @default(autoincrement())
+  name        String
+  email       String
+  company     String   @default("")
+  country     String   @default("")
+  venue       String   @default("")
+  eventDate   String   @default("")
+  bookingType String   @default("") // DJ Set | Live Drummer | Production | Remix | Collaboration | Festival | Private Event
+  budget      String   @default("")
+  message     String   @default("")
+  status      String   @default("NEW") // NEW | CONTACTED | ARCHIVED
+  createdAt   DateTime @default(now())
+
+  @@index([status])
+}
+
+// Uploaded media stored in the DB so it survives redeploys (host disk is ephemeral).
+model Upload {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  mime      String
+  data      Bytes
+  createdAt DateTime @default(now())
+}
+
+// Key/value site settings: hero video, bio, social links, EPK fields, etc.
+model Setting {
+  key   String @id
+  value String @default("")
+}

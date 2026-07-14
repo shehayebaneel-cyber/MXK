@@ -7,6 +7,7 @@ import { AdminLayout } from "./admin/AdminLayout";
 import { AdminLogin } from "./admin/Login";
 import { AdminReleases } from "./admin/Releases";
 import { AdminSettings } from "./admin/SettingsAdmin";
+import { AdminTickets } from "./admin/Tickets";
 import { Layout } from "./components/Layout";
 import { ScrollToTop } from "./components/ScrollToTop";
 import { About } from "./pages/About";
@@ -44,6 +45,7 @@ export default function App() {
           <Route index element={<AdminDashboard />} />
           <Route path="releases" element={<AdminReleases />} />
           <Route path="events" element={<AdminEvents />} />
+          <Route path="tickets" element={<AdminTickets />} />
           <Route path="archive" element={<AdminArchive />} />
           <Route path="bookings" element={<AdminBookings />} />
           <Route path="settings" element={<AdminSettings />} />

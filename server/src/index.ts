@@ -7,6 +7,7 @@ import { bookingsRouter } from "./routes/bookings";
 import { eventsRouter } from "./routes/events";
 import { releasesRouter } from "./routes/releases";
 import { settingsRouter } from "./routes/settings";
+import { ticketsRouter } from "./routes/tickets";
 import { uploadsRouter } from "./routes/uploads";
 
 // Neon (serverless) can drop/suspend connections; a single failed query must
@@ -24,6 +25,7 @@ app.use("/api/releases", releasesRouter);
 app.use("/api/events", eventsRouter);
 app.use("/api/archive", archiveRouter);
 app.use("/api/bookings", bookingsRouter);
+app.use("/api/tickets", ticketsRouter);
 app.use("/api/settings", settingsRouter);
 app.use("/api/uploads", uploadsRouter);
 

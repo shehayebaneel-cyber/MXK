@@ -4,11 +4,82 @@ import { api, formatDate, mediaUrl } from "../lib/api";
 import { useMeta } from "../lib/useMeta";
 import type { MXKEvent } from "../types";
 
+const field = "w-full rounded-lg border border-line bg-ink-3 px-4 py-3 text-sm text-chrome outline-none focus:border-blue placeholder:text-fog/50";
+const priceLabel = (e: MXKEvent) => (e.ticketPrice > 0 ? `$${e.ticketPrice.toFixed(0)} / ticket` : "Free entry · RSVP");
+
+function TicketModal({ event, onClose }: { event: MXKEvent; onClose: () => void }) {
+  const [form, setForm] = useState({ name: "", email: "", phone: "", quantity: 1, website: "" });
+  const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
+  const [err, setErr] = useState("");
+  const [done, setDone] = useState<{ reference: string; quantity: number } | null>(null);
+  const soldOut = event.ticketsLeft === 0;
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!form.name.trim() || !form.email.trim()) { setErr("Name and email are required."); return; }
+    setState("sending"); setErr("");
+    try {
+      const r = await api.post<{ reference: string; quantity: number }>(`/api/events/${event.slug}/tickets`, form);
+      setDone(r); setState("done");
+    } catch (e) { setErr(e instanceof Error ? e.message : "Couldn't reserve."); setState("error"); }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/80 p-4 backdrop-blur-sm" onClick={onClose}>
+      <div className="w-full max-w-md rounded-2xl border border-line bg-ink-2 p-6" onClick={(e) => e.stopPropagation()}>
+        {done ? (
+          <div className="text-center">
+            <p className="display text-3xl text-chrome">You're on the list 🎟</p>
+            <p className="mt-3 text-fog">{done.quantity} ticket{done.quantity > 1 ? "s" : ""} reserved for <b className="text-chrome">{event.title}</b>.</p>
+            <p className="mt-4 rounded-lg bg-ink-3 px-4 py-3 text-sm text-fog">Your reference<br /><span className="display text-2xl text-blue">{done.reference}</span></p>
+            <p className="mt-3 text-xs text-fog">Show this reference at the door{event.ticketPrice > 0 ? ` — ${priceLabel(event)}, pay on entry` : ""}. A copy has been logged for MXK's team.</p>
+            <button onClick={onClose} className="mt-5 w-full rounded-full bg-chrome px-6 py-3 text-sm font-semibold text-ink">Done</button>
+          </div>
+        ) : (
+          <>
+            <div className="flex items-start justify-between">
+              <div>
+                <h2 className="display text-2xl text-chrome">Reserve tickets</h2>
+                <p className="mt-1 text-sm text-fog">{event.title} · {formatDate(event.date)}</p>
+                <p className="mt-1 text-sm font-semibold text-blue">{priceLabel(event)}{event.ticketNote ? ` · ${event.ticketNote}` : ""}</p>
+                {event.ticketsLeft != null && !soldOut && <p className="text-xs text-fog">{event.ticketsLeft} left</p>}
+              </div>
+              <button onClick={onClose} className="text-fog hover:text-chrome">✕</button>
+            </div>
+            {soldOut ? (
+              <p className="mt-6 rounded-lg bg-red/10 px-4 py-3 text-center font-semibold text-red">Sold out</p>
+            ) : (
+              <form onSubmit={submit} className="mt-5 space-y-3">
+                <input type="text" tabIndex={-1} className="hidden" value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} aria-hidden />
+                <input className={field} placeholder="Full name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                <input className={field} type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+                <input className={field} placeholder="Phone (optional)" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+                <label className="flex items-center justify-between gap-3 text-sm text-fog">
+                  How many tickets?
+                  <select className={`${field} w-24`} value={form.quantity} onChange={(e) => setForm({ ...form, quantity: Number(e.target.value) })}>
+                    {Array.from({ length: Math.min(10, event.ticketsLeft ?? 10) }, (_, i) => i + 1).map((n) => <option key={n} value={n} className="bg-ink-3">{n}</option>)}
+                  </select>
+                </label>
+                {err && <p className="text-sm text-red">{err}</p>}
+                <button disabled={state === "sending"} className="w-full rounded-full bg-chrome px-6 py-3 text-sm font-semibold text-ink transition hover:bg-white disabled:opacity-60">
+                  {state === "sending" ? "Reserving…" : `Reserve ${form.quantity} ticket${form.quantity > 1 ? "s" : ""}`}
+                </button>
+                <p className="text-center text-xs text-fog">No payment now — reserve your spot{event.ticketPrice > 0 ? " and pay at the door" : ""}.</p>
+              </form>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function EventDetail() {
   const { slug } = useParams();
   const [e, setE] = useState<MXKEvent | null>(null);
   const [missing, setMissing] = useState(false);
   const [lightbox, setLightbox] = useState<string | null>(null);
+  const [tickets, setTickets] = useState(false);
 
   useEffect(() => {
     if (!slug) return;
@@ -20,6 +91,9 @@ export function EventDetail() {
 
   if (missing) return <div className="px-6 pt-40 text-center text-fog">Event not found. <Link to="/live" className="text-chrome underline">Back to Live</Link></div>;
   if (!e) return <div className="pt-40 text-center text-fog">Loading…</div>;
+
+  const upcoming = new Date(e.date) >= new Date();
+  const canReserve = e.ticketsEnabled && upcoming;
 
   return (
     <div className="mx-auto max-w-5xl px-6 pb-28 pt-28 sm:pt-32">
@@ -35,9 +109,20 @@ export function EventDetail() {
           <h1 className="display mt-2 text-5xl text-chrome sm:text-6xl">{e.title}</h1>
           <p className="mt-2 text-lg text-fog">{[e.venue, e.city].filter(Boolean).join(" · ")}</p>
           {e.description && <p className="mt-5 max-w-xl leading-relaxed text-fog">{e.description}</p>}
-          {e.ticketUrl && (
-            <a href={e.ticketUrl} target="_blank" rel="noreferrer" className="mt-6 inline-flex rounded-full bg-chrome px-8 py-3.5 text-sm font-semibold text-ink transition hover:bg-white">Get Tickets ↗</a>
-          )}
+
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            {canReserve ? (
+              e.ticketsLeft === 0 ? (
+                <span className="rounded-full border border-line px-8 py-3.5 text-sm font-semibold text-red">Sold out</span>
+              ) : (
+                <button onClick={() => setTickets(true)} className="rounded-full bg-chrome px-8 py-3.5 text-sm font-semibold text-ink transition hover:bg-white">Get Tickets</button>
+              )
+            ) : e.ticketUrl ? (
+              <a href={e.ticketUrl} target="_blank" rel="noreferrer" className="rounded-full bg-chrome px-8 py-3.5 text-sm font-semibold text-ink transition hover:bg-white">Get Tickets ↗</a>
+            ) : null}
+            {canReserve && <span className="text-sm text-fog">{priceLabel(e)}{e.ticketsLeft != null ? ` · ${e.ticketsLeft} left` : ""}</span>}
+          </div>
+
           {e.tracklist && (
             <div className="mt-8">
               <h2 className="text-xs font-bold uppercase tracking-widest text-fog">Tracklist</h2>
@@ -72,6 +157,7 @@ export function EventDetail() {
         </div>
       )}
 
+      {tickets && <TicketModal event={e} onClose={() => setTickets(false)} />}
       {lightbox && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/95 p-4" onClick={() => setLightbox(null)}>
           <img src={lightbox} alt="" className="max-h-[92vh] max-w-full rounded-lg object-contain" />

@@ -44,14 +44,39 @@ model Event {
   date        DateTime
   poster      String?
   description String   @default("")
-  ticketUrl   String?
+  ticketUrl   String? // external ticket link (optional; used only if on-site tickets are off)
   tracklist   String   @default("") // newline-separated
   photos      String   @default("[]") // JSON array of image URLs
   videos      String   @default("[]") // JSON array of video URLs/embeds
   isPublished Boolean  @default(true)
+  // On-site ticketing / RSVP
+  ticketsEnabled Boolean @default(false)
+  ticketPrice    Float   @default(0) // 0 = free / RSVP; else price per ticket
+  ticketCapacity Int     @default(0) // 0 = unlimited
+  ticketNote     String  @default("") // e.g. "Pay cash at the door", "19+"
   createdAt   DateTime @default(now())
+  tickets     TicketRequest[]
 
   @@index([date])
+}
+
+// A fan's ticket reservation for an event (no online payment — reserve/RSVP,
+// pay at the door). MXK confirms/cancels each from the admin.
+model TicketRequest {
+  id         Int      @id @default(autoincrement())
+  reference  String   @unique
+  eventId    Int
+  event      Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventTitle String
+  name       String
+  email      String
+  phone      String   @default("")
+  quantity   Int      @default(1)
+  status     String   @default("PENDING") // PENDING | CONFIRMED | CANCELLED
+  createdAt  DateTime @default(now())
+
+  @@index([eventId])
+  @@index([status])
 }
 
 // Archive media (photos/videos) with filters: Live / Studio / Behind The Scenes.

@@ -16,10 +16,12 @@ function EventRow({ e, past }: { e: MXKEvent; past?: boolean }) {
         <h3 className="mt-1 truncate text-xl font-semibold text-chrome sm:text-2xl">{e.title}</h3>
         <p className="truncate text-sm text-fog">{[e.venue, e.city].filter(Boolean).join(" · ")}</p>
       </div>
-      {!past && e.ticketUrl && (
+      {!past && e.ticketsEnabled ? (
+        <span className="hidden shrink-0 rounded-full bg-chrome px-5 py-2 text-sm font-semibold text-ink sm:inline-flex">🎟 Tickets</span>
+      ) : !past && e.ticketUrl ? (
         <a href={e.ticketUrl} target="_blank" rel="noreferrer" onClick={(ev) => ev.stopPropagation()}
           className="hidden shrink-0 rounded-full bg-chrome px-5 py-2 text-sm font-semibold text-ink transition hover:bg-white sm:inline-flex">Tickets</a>
-      )}
+      ) : null}
       <span className="text-fog transition group-hover:translate-x-1">→</span>
     </Link>
   );

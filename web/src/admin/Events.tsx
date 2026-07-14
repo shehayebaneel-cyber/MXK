@@ -7,7 +7,7 @@ import { Field, PageTitle, btnGhost, btnPrimary, inputCls } from "./ui";
 
 const asDate = (iso?: string) => (iso ? new Date(iso).toISOString().slice(0, 10) : "");
 type Draft = Partial<MXKEvent> & { date?: string };
-const blank: Draft = { title: "", venue: "", city: "", date: asDate(new Date().toISOString()), description: "", ticketUrl: "", tracklist: "", poster: "", photos: [], videos: [] };
+const blank: Draft = { title: "", venue: "", city: "", date: asDate(new Date().toISOString()), description: "", ticketUrl: "", tracklist: "", poster: "", photos: [], videos: [], ticketsEnabled: false, ticketPrice: 0, ticketCapacity: 0, ticketNote: "" };
 
 export function AdminEvents() {
   useMeta("Live — MXK Admin");
@@ -58,6 +58,22 @@ export function AdminEvents() {
               <ImageField value="" onChange={(v) => v && set("photos", [...(draft.photos ?? []), v])} />
             </div>
             <div className="sm:col-span-2"><Field label="Video embed URLs (one per line)"><textarea className={inputCls} rows={2} placeholder="https://www.youtube.com/embed/…" value={(draft.videos ?? []).join("\n")} onChange={(e) => set("videos", e.target.value.split("\n").map((s) => s.trim()).filter(Boolean))} /></Field></div>
+
+            {/* On-site tickets */}
+            <div className="rounded-xl border border-line bg-ink-3/40 p-4 sm:col-span-2">
+              <label className="flex items-center gap-2 text-sm font-semibold text-chrome">
+                <input type="checkbox" checked={!!draft.ticketsEnabled} onChange={(e) => set("ticketsEnabled", e.target.checked)} />
+                Sell / reserve tickets on this site
+              </label>
+              {draft.ticketsEnabled && (
+                <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                  <Field label="Price ($, 0 = free)"><input type="number" min={0} className={inputCls} value={draft.ticketPrice ?? 0} onChange={(e) => set("ticketPrice", Number(e.target.value) || 0)} /></Field>
+                  <Field label="Capacity (0 = unlimited)"><input type="number" min={0} className={inputCls} value={draft.ticketCapacity ?? 0} onChange={(e) => set("ticketCapacity", Number(e.target.value) || 0)} /></Field>
+                  <Field label="Note (e.g. pay at door)"><input className={inputCls} value={draft.ticketNote ?? ""} onChange={(e) => set("ticketNote", e.target.value)} /></Field>
+                </div>
+              )}
+              {!draft.ticketsEnabled && <p className="mt-2 text-xs text-fog">Off — fans use the external Ticket URL above (if set). Turn on to let fans reserve directly on the site.</p>}
+            </div>
           </div>
           <div className="mt-5 flex gap-2">
             <button onClick={save} disabled={busy} className={btnPrimary}>{busy ? "Saving…" : "Save"}</button>

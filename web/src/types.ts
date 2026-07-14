@@ -30,6 +30,25 @@ export interface MXKEvent {
   tracklist: string;
   photos: string[];
   videos: string[];
+  ticketsEnabled: boolean;
+  ticketPrice: number;
+  ticketCapacity: number;
+  ticketNote: string;
+  ticketsSold?: number;
+  ticketsLeft?: number | null;
+}
+
+export interface TicketRequest {
+  id: number;
+  reference: string;
+  eventId: number;
+  eventTitle: string;
+  name: string;
+  email: string;
+  phone: string;
+  quantity: number;
+  status: "PENDING" | "CONFIRMED" | "CANCELLED";
+  createdAt: string;
 }
 
 export interface ArchiveItem {

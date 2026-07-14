@@ -6,6 +6,7 @@ const LINKS = [
   { to: "/admin", label: "Dashboard", end: true },
   { to: "/admin/releases", label: "Music" },
   { to: "/admin/events", label: "Live" },
+  { to: "/admin/tickets", label: "Tickets" },
   { to: "/admin/archive", label: "Archive" },
   { to: "/admin/bookings", label: "Bookings" },
   { to: "/admin/settings", label: "Settings" },

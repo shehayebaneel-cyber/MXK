@@ -130,7 +130,7 @@ export function Home() {
           </div>
 
           {/* RIGHT — cinematic 3D visual + floating glass card */}
-          <div className="scale-in relative mx-auto w-full max-w-sm [perspective:1100px]" style={{ animationDelay: "0.4s" }}>
+          <div className="scale-in relative mx-auto w-[72%] max-w-[16.5rem] [perspective:1100px] sm:w-full sm:max-w-sm" style={{ animationDelay: "0.4s" }}>
             {/* blue/purple glow behind, for separation + depth */}
             <div className="absolute -inset-6 -z-10 rounded-[2.75rem] bg-gradient-to-tr from-blue/35 via-purple/25 to-transparent blur-3xl" />
             <Tilt className="tilt relative" maxRX={4} maxRY={6} scale={1.02}>

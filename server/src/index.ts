@@ -1,5 +1,6 @@
 import cors from "cors";
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
+import { prisma } from "./db";
 import { adminRouter } from "./routes/admin";
 import { archiveRouter } from "./routes/archive";
 import { bookingsRouter } from "./routes/bookings";
@@ -8,9 +9,14 @@ import { releasesRouter } from "./routes/releases";
 import { settingsRouter } from "./routes/settings";
 import { uploadsRouter } from "./routes/uploads";
 
+// Neon (serverless) can drop/suspend connections; a single failed query must
+// never take the whole API down. Log and keep running.
+process.on("unhandledRejection", (e) => console.error("unhandledRejection:", e));
+process.on("uncaughtException", (e) => console.error("uncaughtException:", e));
+
 const app = express();
 app.use(cors());
-app.use(express.json({ limit: "12mb" })); // room for base64 image uploads
+app.use(express.json({ limit: "12mb" }));
 
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 app.use("/api/admin", adminRouter);
@@ -22,6 +28,21 @@ app.use("/api/settings", settingsRouter);
 app.use("/api/uploads", uploadsRouter);
 
 app.use((_req, res) => res.status(404).json({ error: "Not found." }));
+// Express 4 doesn't forward async rejections here, but sync throws + the guards
+// above keep the process alive; return a clean 500 when reached.
+app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+  console.error("route error:", err);
+  if (!res.headersSent) res.status(500).json({ error: "Server error — please retry." });
+});
+
+// Wake the Neon connection on boot (serverless cold start) with a few retries.
+async function warmup(tries = 6) {
+  for (let i = 1; i <= tries; i++) {
+    try { await prisma.$queryRaw`SELECT 1`; console.log("DB connected."); return; }
+    catch { console.error(`DB warmup ${i}/${tries} failed — retrying…`); await new Promise((r) => setTimeout(r, 1500)); }
+  }
+  console.error("DB still unreachable after warmup — the API will keep retrying per request.");
+}
 
 const port = Number(process.env.PORT) || 4300;
-app.listen(port, () => console.log(`MXK API on :${port}`));
+app.listen(port, () => { console.log(`MXK API on :${port}`); warmup(); });

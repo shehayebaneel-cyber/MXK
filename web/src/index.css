@@ -96,14 +96,6 @@ body {
 @keyframes navIn { from { opacity: 0; transform: translateY(-100%); } to { opacity: 1; transform: none; } }
 .nav-in { animation: navIn 0.6s ease forwards; }
 
-@keyframes menuIn { from { opacity: 0; transform: translateX(12%); } to { opacity: 1; transform: none; } }
-.menu-in { animation: menuIn 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-.fade-in { animation: fadeIn 0.3s ease; }
-
-/* Safe area for gesture-nav phones */
-.pb-safe { padding-bottom: calc(env(safe-area-inset-bottom) + 1rem); }
-
 /* Light sweep across the title */
 @keyframes sweep { 0% { background-position: 150% 0; } 100% { background-position: -50% 0; } }
 .sweep {

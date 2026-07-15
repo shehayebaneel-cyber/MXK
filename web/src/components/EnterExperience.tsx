@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { api, formatDate, mediaUrl } from "../lib/api";
+import { api, mediaUrl } from "../lib/api";
 import { usePlayer } from "../player/PlayerContext";
 import type { Release } from "../types";
 import { toTrack } from "./ReleaseCard";
@@ -22,6 +22,7 @@ const write = (k: string, v: string) => { try { localStorage.setItem(k, v); } ca
 export function EnterExperience() {
   const player = usePlayer();
   const [featured, setFeatured] = useState<Release | null>(null);
+  const [releases, setReleases] = useState<Release[]>([]);
   // Show the gate only on a genuine first visit — computed synchronously so the
   // homepage never flashes behind it.
   const [show, setShow] = useState(() => read(SEEN_KEY) !== "1");
@@ -30,25 +31,33 @@ export function EnterExperience() {
 
   useEffect(() => {
     api.get<Release | null>("/api/releases/featured").then(setFeatured).catch(() => {});
+    api.get<Release[]>("/api/releases").then(setReleases).catch(() => {});
   }, []);
 
-  // Returning visitor who previously chose music: resume the featured track once
-  // it loads. Browsers may block audio without a fresh gesture — in that case the
-  // floating player simply appears paused, one tap from resuming. No autoplay hacks.
+  // The track that will actually play. The featured release is often an upcoming
+  // single with no audio preview yet (pre-release), so fall back to the newest
+  // release that HAS a preview — otherwise "Play" would do nothing.
+  const track: Release | null =
+    (featured?.previewUrl ? featured : null) ?? releases.find((r) => r.previewUrl) ?? featured ?? releases[0] ?? null;
+  const canPlay = !!track?.previewUrl;
+
+  // Returning visitor who previously chose music: resume the track once it loads.
+  // Browsers may block audio without a fresh gesture — in that case the floating
+  // player simply appears paused, one tap from resuming. No autoplay hacks.
   useEffect(() => {
-    if (show || resumed.current || !featured) return;
+    if (show || resumed.current || !track) return;
     resumed.current = true;
-    if (read(PREF_KEY) === "on" && featured.previewUrl) player.play([toTrack(featured)]);
-  }, [show, featured]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (read(PREF_KEY) === "on" && track.previewUrl) player.play([toTrack(track)]);
+  }, [show, track]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!show) return null;
 
-  const art = mediaUrl(featured?.artwork);
+  const art = mediaUrl(track?.artwork);
 
   function enter(withMusic: boolean) {
     write(SEEN_KEY, "1");
     write(PREF_KEY, withMusic ? "on" : "off");
-    if (withMusic && featured?.previewUrl) player.play([toTrack(featured)]);
+    if (withMusic && track?.previewUrl) player.play([toTrack(track)]);
     setLeaving(true);
     // Unmount after the fade so the homepage is fully interactive.
     window.setTimeout(() => setShow(false), 640);
@@ -86,9 +95,9 @@ export function EnterExperience() {
               {art ? <img src={art} alt="" className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-fog">MXK</div>}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate font-display text-xl leading-tight text-chrome">{featured?.title ?? "MXK"}</p>
+              <p className="truncate font-display text-xl leading-tight text-chrome">{track?.title ?? "MXK"}</p>
               <p className="truncate text-sm text-fog">
-                {featured ? [featured.featuredArtists || "MXK", formatDate(featured.releaseDate)].filter(Boolean).join(" · ") : "Featured track"}
+                {track ? (track.featuredArtists || "MXK") : "Featured track"}
               </p>
             </div>
           </div>
@@ -102,7 +111,7 @@ export function EnterExperience() {
             <span className="absolute inset-0 rounded-full ring-2 ring-white/40 pulse" />
             <span className="ml-1 text-3xl">▶</span>
           </button>
-          <p className="mt-4 text-xs text-fog">Tap to play &amp; enter</p>
+          <p className="mt-4 text-xs text-fog">{canPlay ? "Tap to play & enter" : "Tap to enter"}</p>
         </div>
 
         <button

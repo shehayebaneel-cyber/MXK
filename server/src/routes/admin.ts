@@ -15,12 +15,12 @@ adminRouter.post("/login", (req, res) => {
 
 // GET /api/admin/overview  (admin) — dashboard counts.
 adminRouter.get("/overview", requireAdmin, async (_req, res) => {
-  const [releases, events, bookings, newBookings, archive] = await Promise.all([
+  const [releases, events, messages, unreadMessages, archive] = await Promise.all([
     prisma.release.count(),
     prisma.event.count(),
-    prisma.booking.count(),
-    prisma.booking.count({ where: { status: "NEW" } }),
+    prisma.contactMessage.count({ where: { archived: false } }),
+    prisma.contactMessage.count({ where: { archived: false, read: false } }),
     prisma.archiveItem.count(),
   ]);
-  res.json({ releases, events, bookings, newBookings, archive });
+  res.json({ releases, events, messages, unreadMessages, archive });
 });

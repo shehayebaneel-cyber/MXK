@@ -77,4 +77,8 @@ export interface Settings {
   beatport: string;
   youtube: string;
   bookingEmail: string;
+  managementEmail: string;
+  managementName: string;
+  bookingAgentEmail: string;
+  bookingAgentName: string;
 }

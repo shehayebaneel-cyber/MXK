@@ -8,7 +8,7 @@ const LINKS = [
   { to: "/admin/events", label: "Live" },
   { to: "/admin/tickets", label: "Tickets" },
   { to: "/admin/archive", label: "Archive" },
-  { to: "/admin/bookings", label: "Bookings" },
+  { to: "/admin/messages", label: "Messages" },
   { to: "/admin/settings", label: "Settings" },
 ];
 

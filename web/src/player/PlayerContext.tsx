@@ -27,7 +27,10 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [volume, setVol] = useState(0.8);
+  const [volume, setVol] = useState(() => {
+    const saved = Number(typeof localStorage !== "undefined" ? localStorage.getItem("mxk-volume") : NaN);
+    return Number.isFinite(saved) && saved >= 0 && saved <= 1 ? saved : 0.8;
+  });
 
   const current = queue[index] ?? null;
 
@@ -61,7 +64,10 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     audio.play().catch(() => setIsPlaying(false));
   }, [current?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  useEffect(() => { if (audioRef.current) audioRef.current.volume = volume; }, [volume]);
+  useEffect(() => {
+    if (audioRef.current) audioRef.current.volume = volume;
+    try { localStorage.setItem("mxk-volume", String(volume)); } catch { /* ignore */ }
+  }, [volume]);
 
   const value: PlayerValue = {
     queue, current, isPlaying, progress, duration, volume,

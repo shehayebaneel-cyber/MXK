@@ -18,7 +18,12 @@ export const DEFAULT_SETTINGS: Record<string, string> = {
   anghami: "",
   beatport: "",
   youtube: "",
-  bookingEmail: "",
+  // Business / contact page
+  bookingEmail: "", // primary "reach MXK" email shown on the Contact page
+  managementEmail: "", // optional — management contact
+  managementName: "", // optional — management/label name
+  bookingAgentEmail: "", // optional — booking agent contact
+  bookingAgentName: "", // optional — booking agent name
 };
 
 // GET /api/settings  (public) — merged defaults + overrides.

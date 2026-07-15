@@ -17,7 +17,11 @@ const FIELDS: { key: keyof Settings; label: string; area?: boolean }[] = [
   { key: "soundcloud", label: "SoundCloud URL" },
   { key: "youtube", label: "YouTube URL" },
   { key: "beatport", label: "Beatport URL" },
-  { key: "bookingEmail", label: "Booking email" },
+  { key: "bookingEmail", label: "Contact email (shown on the Contact page — general inquiries)" },
+  { key: "managementName", label: "Management name (optional)" },
+  { key: "managementEmail", label: "Management email (optional)" },
+  { key: "bookingAgentName", label: "Booking agent name (optional)" },
+  { key: "bookingAgentEmail", label: "Booking agent email (optional)" },
 ];
 
 export function AdminSettings() {

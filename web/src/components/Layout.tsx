@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet } from "react-router-dom";
 import { api } from "../lib/api";
 import type { Settings } from "../types";
 import { CursorGlow } from "./CursorGlow";
+import { EnterExperience } from "./EnterExperience";
 import { FloatingPlayer } from "./FloatingPlayer";
 import { PlatformIcon } from "./PlatformIcon";
 
@@ -52,7 +53,7 @@ export function Layout() {
             ))}
           </nav>
           <div className="flex items-center gap-2">
-            <Link to="/booking" className="hidden rounded-full bg-chrome px-4 py-2 text-sm font-semibold text-ink transition hover:bg-white sm:inline-flex">Book MXK</Link>
+            <Link to="/contact" className="hidden rounded-full bg-chrome px-4 py-2 text-sm font-semibold text-ink transition hover:bg-white sm:inline-flex">Contact</Link>
             <button onClick={() => setOpen((v) => !v)} aria-label="Menu" className="rounded-lg p-2 text-chrome lg:hidden">
               {open ? "✕" : "☰"}
             </button>
@@ -66,7 +67,7 @@ export function Layout() {
                 {l.label}
               </NavLink>
             ))}
-            <Link to="/booking" onClick={() => setOpen(false)} className="mt-2 block rounded-full bg-chrome px-4 py-2.5 text-center text-sm font-semibold text-ink">Book MXK</Link>
+            <Link to="/contact" onClick={() => setOpen(false)} className="mt-2 block rounded-full bg-chrome px-4 py-2.5 text-center text-sm font-semibold text-ink">Contact</Link>
           </nav>
         )}
       </header>
@@ -80,7 +81,7 @@ export function Layout() {
           <div className="lg:col-span-2">
             <p className="display text-4xl text-chrome">MXK // MAKRAM</p>
             <p className="mt-3 max-w-sm text-sm leading-relaxed text-fog">Producer • Drummer • DJ — moving between Lebanon 🇱🇧 and Canada 🇨🇦.</p>
-            <Link to="/booking" className="mt-5 inline-flex rounded-full border border-line px-5 py-2.5 text-sm font-semibold text-chrome transition hover:border-chrome">Book MXK →</Link>
+            <Link to="/contact" className="mt-5 inline-flex rounded-full border border-line px-5 py-2.5 text-sm font-semibold text-chrome transition hover:border-chrome">Get in Touch →</Link>
           </div>
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-fog">Explore</p>
@@ -108,6 +109,7 @@ export function Layout() {
       </footer>
 
       <FloatingPlayer />
+      <EnterExperience />
     </div>
   );
 }

@@ -40,9 +40,9 @@ export function EPK() {
             )) : "Links coming soon."}
           </div>
         </Block>
-        <Block title="Booking">
-          Booking & management enquiries:{" "}
-          {settings?.bookingEmail ? <a className="text-chrome underline" href={`mailto:${settings.bookingEmail}`}>{settings.bookingEmail}</a> : <Link to="/booking" className="text-chrome underline">use the booking form</Link>}.
+        <Block title="Contact">
+          Booking, management & press enquiries:{" "}
+          {settings?.bookingEmail ? <a className="text-chrome underline" href={`mailto:${settings.bookingEmail}`}>{settings.bookingEmail}</a> : <Link to="/contact" className="text-chrome underline">use the contact form</Link>}.
         </Block>
         <Block title="Technical Rider">DJ: 2× CDJ + mixer (Pioneer standard), or DJ + live drum kit setup for hybrid sets. Full rider available on request.</Block>
         <Block title="Hospitality Rider">Standard artist hospitality. Detailed rider shared on confirmation.</Block>

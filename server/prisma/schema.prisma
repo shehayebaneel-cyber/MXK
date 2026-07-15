@@ -96,22 +96,22 @@ model ArchiveItem {
   @@index([category])
 }
 
-// A booking request from the Booking page.
-model Booking {
+// A message from the public Contact page — bookings, collabs, press, general.
+model ContactMessage {
   id          Int      @id @default(autoincrement())
   name        String
   email       String
-  company     String   @default("")
+  phone       String   @default("")
   country     String   @default("")
-  venue       String   @default("")
-  eventDate   String   @default("")
-  bookingType String   @default("") // DJ Set | Live Drummer | Production | Remix | Collaboration | Festival | Private Event
-  budget      String   @default("")
+  subject     String   @default("")
+  inquiryType String   @default("General Inquiry") // General Inquiry | Live Performance | DJ Booking | Studio Production | Collaboration | Remix Request | Press / Media | Brand Partnership | Other
   message     String   @default("")
-  status      String   @default("NEW") // NEW | CONTACTED | ARCHIVED
+  read        Boolean  @default(false) // MXK has opened/read it
+  archived    Boolean  @default(false) // hidden from the main inbox
   createdAt   DateTime @default(now())
 
-  @@index([status])
+  @@index([archived])
+  @@index([read])
 }
 
 // Uploaded media stored in the DB so it survives redeploys (host disk is ephemeral).

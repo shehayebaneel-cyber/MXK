@@ -85,7 +85,7 @@ function HeroReleaseCard({ release, unreleased }: { release: Release; unreleased
 }
 
 export function Home() {
-  useMeta("MXK // MAKRAM — Producer, Drummer, DJ", "The official home of MXK (Makram) — Lebanese-Canadian producer, drummer and DJ. Latest releases, live shows, and booking.");
+  useMeta("MXK // MAKRAM — Producer, Drummer, DJ", "The official home of MXK (Makram) — Lebanese-Canadian producer, drummer and DJ. Latest releases, live shows, and how to get in touch.");
   const [settings, setSettings] = useState<Settings | null>(null);
   const [featured, setFeatured] = useState<Release | null>(null);
   const [latest, setLatest] = useState<Release[]>([]);
@@ -137,7 +137,7 @@ export function Home() {
             </p>
             <div className="rise-in mt-6 flex gap-3 sm:mt-8" style={{ animationDelay: "0.55s" }}>
               <Link to="/music" className="flex-1 rounded-full bg-chrome py-4 text-center text-sm font-semibold text-ink transition hover:bg-white sm:flex-none sm:px-7 sm:py-3.5">Listen Now</Link>
-              <Link to="/booking" className="flex-1 rounded-full border border-line py-4 text-center text-sm font-semibold text-chrome transition hover:border-chrome sm:flex-none sm:px-7 sm:py-3.5">Book MXK</Link>
+              <Link to="/contact" className="flex-1 rounded-full border border-line py-4 text-center text-sm font-semibold text-chrome transition hover:border-chrome sm:flex-none sm:px-7 sm:py-3.5">Contact</Link>
             </div>
             {/* Social proof — location always; roles/streaming are redundant on
                 mobile (roles are in the eyebrow, platforms in the section below). */}

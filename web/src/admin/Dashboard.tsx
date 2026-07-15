@@ -4,7 +4,7 @@ import { api } from "../lib/api";
 import { useMeta } from "../lib/useMeta";
 import { PageTitle } from "./ui";
 
-type Overview = { releases: number; events: number; bookings: number; newBookings: number; archive: number };
+type Overview = { releases: number; events: number; messages: number; unreadMessages: number; archive: number };
 
 export function AdminDashboard() {
   useMeta("Dashboard — MXK Admin");
@@ -15,7 +15,7 @@ export function AdminDashboard() {
     { label: "Releases", value: o?.releases, to: "/admin/releases" },
     { label: "Live shows", value: o?.events, to: "/admin/events" },
     { label: "Archive items", value: o?.archive, to: "/admin/archive" },
-    { label: "New bookings", value: o?.newBookings, to: "/admin/bookings", alert: (o?.newBookings ?? 0) > 0 },
+    { label: "Unread messages", value: o?.unreadMessages, to: "/admin/messages", alert: (o?.unreadMessages ?? 0) > 0 },
   ];
 
   return (
@@ -34,7 +34,7 @@ export function AdminDashboard() {
         {[
           ["Add a release", "/admin/releases"], ["Add a show", "/admin/events"],
           ["Add archive media", "/admin/archive"], ["Edit homepage & bio", "/admin/settings"],
-          ["View bookings", "/admin/bookings"], ["Open live site ↗", "/"],
+          ["View messages", "/admin/messages"], ["Open live site ↗", "/"],
         ].map(([label, to]) => (
           <Link key={label} to={to} className="rounded-xl border border-line bg-ink-2 px-5 py-4 text-sm font-semibold text-chrome transition hover:border-blue">{label}</Link>
         ))}

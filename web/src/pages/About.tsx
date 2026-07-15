@@ -57,7 +57,7 @@ export function About() {
       </div>
 
       <div className="mt-14 flex flex-wrap gap-3">
-        <Link to="/booking" className="rounded-full bg-chrome px-7 py-3.5 text-sm font-semibold text-ink transition hover:bg-white">Book MXK</Link>
+        <Link to="/contact" className="rounded-full bg-chrome px-7 py-3.5 text-sm font-semibold text-ink transition hover:bg-white">Contact</Link>
         <Link to="/epk" className="rounded-full border border-line px-7 py-3.5 text-sm font-semibold text-chrome transition hover:border-chrome">Press Kit</Link>
       </div>
     </div>

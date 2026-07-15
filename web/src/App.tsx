@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { AdminArchive } from "./admin/ArchiveAdmin";
-import { AdminBookings } from "./admin/Bookings";
+import { AdminContactMessages } from "./admin/ContactMessages";
 import { AdminDashboard } from "./admin/Dashboard";
 import { AdminEvents } from "./admin/Events";
 import { AdminLayout } from "./admin/AdminLayout";
@@ -13,7 +13,7 @@ import { ScrollToTop } from "./components/ScrollToTop";
 import { About } from "./pages/About";
 import { ArabicHouse } from "./pages/ArabicHouse";
 import { Archive } from "./pages/Archive";
-import { Booking } from "./pages/Booking";
+import { Contact } from "./pages/Contact";
 import { EPK } from "./pages/EPK";
 import { Home } from "./pages/Home";
 import { Live } from "./pages/Live";
@@ -36,7 +36,7 @@ export default function App() {
           <Route path="/archive" element={<Archive />} />
           <Route path="/about" element={<About />} />
           <Route path="/epk" element={<EPK />} />
-          <Route path="/booking" element={<Booking />} />
+          <Route path="/contact" element={<Contact />} />
         </Route>
 
         {/* Admin */}
@@ -47,7 +47,7 @@ export default function App() {
           <Route path="events" element={<AdminEvents />} />
           <Route path="tickets" element={<AdminTickets />} />
           <Route path="archive" element={<AdminArchive />} />
-          <Route path="bookings" element={<AdminBookings />} />
+          <Route path="messages" element={<AdminContactMessages />} />
           <Route path="settings" element={<AdminSettings />} />
         </Route>
 

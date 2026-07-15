@@ -20,7 +20,8 @@ const app = express();
 app.use(cors());
 // Stripe webhook needs the RAW body for signature verification — mount before JSON.
 app.post("/api/stripe/webhook", express.raw({ type: "application/json" }), stripeWebhook);
-app.use(express.json({ limit: "12mb" }));
+// Uploads arrive as base64 data URLs (audio previews up to 10 MB → ~14 MB encoded).
+app.use(express.json({ limit: "20mb" }));
 
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 app.use("/api/admin", adminRouter);

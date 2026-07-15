@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { AudioField } from "../components/AudioField";
 import { ImageField } from "../components/ImageField";
 import { api, mediaUrl } from "../lib/api";
 import { useMeta } from "../lib/useMeta";
@@ -52,10 +53,13 @@ export function AdminReleases() {
             <Field label="Release date"><input type="date" className={inputCls} value={asDate(draft.releaseDate)} onChange={(e) => set("releaseDate", e.target.value)} /></Field>
             <div className="sm:col-span-2"><ImageField label="Artwork" value={draft.artwork ?? ""} onChange={(v) => set("artwork", v)} /></div>
             <div className="sm:col-span-2"><Field label="Description"><textarea className={inputCls} rows={3} value={draft.description ?? ""} onChange={(e) => set("description", e.target.value)} /></Field></div>
-            {([["spotify", "Spotify"], ["appleMusic", "Apple Music"], ["soundcloud", "SoundCloud"], ["youtube", "YouTube"], ["beatport", "Beatport"], ["previewUrl", "Preview audio (mp3/m4a)"], ["embedUrl", "Embed (YouTube) URL"]] as const).map(([k, lbl]) => (
+            {([["spotify", "Spotify"], ["appleMusic", "Apple Music"], ["soundcloud", "SoundCloud"], ["youtube", "YouTube"], ["beatport", "Beatport"], ["embedUrl", "Embed (YouTube) URL"]] as const).map(([k, lbl]) => (
               <Field key={k} label={lbl}><input className={inputCls} value={(draft[k] as string) ?? ""} onChange={(e) => set(k, e.target.value)} /></Field>
             ))}
-            <label className="flex items-center gap-2 text-sm text-chrome"><input type="checkbox" checked={!!draft.isFeatured} onChange={(e) => set("isFeatured", e.target.checked)} /> Featured on homepage (latest release)</label>
+            <div className="sm:col-span-2">
+              <AudioField label="Preview audio — plays in the site player (upload an mp3/m4a or paste a URL)" value={draft.previewUrl ?? ""} onChange={(v) => set("previewUrl", v)} />
+            </div>
+            <label className="flex items-center gap-2 text-sm text-chrome sm:col-span-2"><input type="checkbox" checked={!!draft.isFeatured} onChange={(e) => set("isFeatured", e.target.checked)} /> Featured on homepage — this becomes the entrance / "Now Playing" song when it has preview audio</label>
           </div>
           <div className="mt-5 flex gap-2">
             <button onClick={save} disabled={busy} className={btnPrimary}>{busy ? "Saving…" : "Save"}</button>

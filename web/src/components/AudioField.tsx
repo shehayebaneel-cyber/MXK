@@ -19,9 +19,16 @@ export function AudioField({ value, onChange, label }: { value: string; onChange
 
   async function upload(file: File | undefined) {
     if (!file) return;
-    if (!file.type.startsWith("audio/")) { setErr("Choose an audio file (MP3, M4A…)."); return; }
-    if (file.size > MAX) { setErr("Audio too large — keep previews under 10 MB."); return; }
-    setBusy(true); setErr("");
+    if (!file.type.startsWith("audio/")) {
+      setErr("Choose an audio file (MP3, M4A…).");
+      return;
+    }
+    if (file.size > MAX) {
+      setErr("Audio too large — keep previews under 10 MB.");
+      return;
+    }
+    setBusy(true);
+    setErr("");
     try {
       const dataUrl = await readDataUrl(file);
       const { url } = await api.post<{ url: string }>("/api/uploads", { dataUrl });
@@ -36,16 +43,30 @@ export function AudioField({ value, onChange, label }: { value: string; onChange
 
   return (
     <div>
-      {label && <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-fog">{label}</label>}
+      {label && <label className="text-fog mb-1 block text-xs font-semibold uppercase tracking-wide">{label}</label>}
       <div className="flex gap-2">
-        <input value={value} onChange={(e) => onChange(e.target.value)} placeholder="Upload a file or paste an audio URL"
-          className="min-w-0 flex-1 rounded-lg border border-line bg-ink-3 px-3 py-2 text-sm text-chrome outline-none focus:border-blue" />
-        <button type="button" onClick={() => fileRef.current?.click()} disabled={busy}
-          className="shrink-0 rounded-lg bg-chrome px-3 py-2 text-sm font-semibold text-ink disabled:opacity-50">{busy ? "Uploading…" : "♪ Upload"}</button>
-        {value && <button type="button" onClick={() => onChange("")} className="shrink-0 rounded-lg border border-line px-3 py-2 text-sm text-fog">Clear</button>}
+        <input
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="Upload a file or paste an audio URL"
+          className="border-line bg-ink-3 text-chrome focus:border-blue min-w-0 flex-1 rounded-lg border px-3 py-2 text-sm outline-none"
+        />
+        <button
+          type="button"
+          onClick={() => fileRef.current?.click()}
+          disabled={busy}
+          className="bg-chrome text-ink shrink-0 rounded-lg px-3 py-2 text-sm font-semibold disabled:opacity-50"
+        >
+          {busy ? "Uploading…" : "♪ Upload"}
+        </button>
+        {value && (
+          <button type="button" onClick={() => onChange("")} className="border-line text-fog shrink-0 rounded-lg border px-3 py-2 text-sm">
+            Clear
+          </button>
+        )}
       </div>
       {value && <audio src={mediaUrl(value)} controls preload="none" className="mt-2 h-9 w-full" />}
-      {err && <p className="mt-1 text-xs text-red">{err}</p>}
+      {err && <p className="text-red mt-1 text-xs">{err}</p>}
       <input ref={fileRef} type="file" accept="audio/*" hidden onChange={(e) => upload(e.target.files?.[0])} />
     </div>
   );

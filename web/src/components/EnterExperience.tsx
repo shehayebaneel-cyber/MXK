@@ -8,8 +8,20 @@ import { Equalizer } from "./Equalizer";
 const SEEN_KEY = "mxk-seen-intro"; // has the visitor been here before
 const PREF_KEY = "mxk-music-pref"; // "on" | "off" — did they choose music last time
 
-const read = (k: string) => { try { return localStorage.getItem(k); } catch { return null; } };
-const write = (k: string, v: string) => { try { localStorage.setItem(k, v); } catch { /* ignore */ } };
+const read = (k: string) => {
+  try {
+    return localStorage.getItem(k);
+  } catch {
+    return null;
+  }
+};
+const write = (k: string, v: string) => {
+  try {
+    localStorage.setItem(k, v);
+  } catch {
+    /* ignore */
+  }
+};
 
 /**
  * First-visit "enter MXK's world" gate. A full-screen splash over the site:
@@ -30,15 +42,20 @@ export function EnterExperience() {
   const resumed = useRef(false);
 
   useEffect(() => {
-    api.get<Release | null>("/api/releases/featured").then(setFeatured).catch(() => {});
-    api.get<Release[]>("/api/releases").then(setReleases).catch(() => {});
+    api
+      .get<Release | null>("/api/releases/featured")
+      .then(setFeatured)
+      .catch(() => {});
+    api
+      .get<Release[]>("/api/releases")
+      .then(setReleases)
+      .catch(() => {});
   }, []);
 
   // The track that will actually play. The featured release is often an upcoming
   // single with no audio preview yet (pre-release), so fall back to the newest
   // release that HAS a preview — otherwise "Play" would do nothing.
-  const track: Release | null =
-    (featured?.previewUrl ? featured : null) ?? releases.find((r) => r.previewUrl) ?? featured ?? releases[0] ?? null;
+  const track: Release | null = (featured?.previewUrl ? featured : null) ?? releases.find((r) => r.previewUrl) ?? featured ?? releases[0] ?? null;
   const canPlay = !!track?.previewUrl;
 
   // Returning visitor who previously chose music: resume the track once it loads.
@@ -68,55 +85,83 @@ export function EnterExperience() {
       role="dialog"
       aria-label="Enter MXK"
       onClick={() => enter(true)}
-      className={`fixed inset-0 z-[60] flex flex-col items-center justify-center overflow-hidden bg-ink px-6 transition-opacity duration-[600ms] print:hidden ${leaving ? "pointer-events-none opacity-0" : "opacity-100"}`}
+      className={`bg-ink fixed inset-0 z-[60] flex flex-col items-center justify-center overflow-hidden px-6 transition-opacity duration-[600ms] print:hidden ${leaving ? "pointer-events-none opacity-0" : "opacity-100"}`}
     >
       {/* Living background — reuses the hero atmosphere */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="aurora" style={{ width: "40rem", height: "40rem", top: "-10rem", left: "-6rem", background: "radial-gradient(circle, rgba(79,124,255,0.4), transparent 60%)", animation: "drift 18s ease-in-out infinite" }} />
-        <div className="aurora" style={{ width: "32rem", height: "32rem", bottom: "-8rem", right: "-6rem", background: "radial-gradient(circle, rgba(154,92,255,0.38), transparent 60%)", animation: "drift 22s ease-in-out infinite reverse" }} />
+        <div
+          className="aurora"
+          style={{
+            width: "40rem",
+            height: "40rem",
+            top: "-10rem",
+            left: "-6rem",
+            background: "radial-gradient(circle, rgba(79,124,255,0.4), transparent 60%)",
+            animation: "drift 18s ease-in-out infinite",
+          }}
+        />
+        <div
+          className="aurora"
+          style={{
+            width: "32rem",
+            height: "32rem",
+            bottom: "-8rem",
+            right: "-6rem",
+            background: "radial-gradient(circle, rgba(154,92,255,0.38), transparent 60%)",
+            animation: "drift 22s ease-in-out infinite reverse",
+          }}
+        />
         <div className="grain absolute inset-0 opacity-[0.05]" />
       </div>
 
       <Sparks />
 
       <div className="scale-in flex w-full max-w-md flex-col items-center text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.5em] text-blue">Welcome to</p>
-        <h1 className="display mt-3 text-7xl leading-none text-chrome sm:text-8xl">MXK</h1>
-        <p className="mt-2 text-sm uppercase tracking-[0.3em] text-fog">// MAKRAM</p>
+        <p className="text-blue text-xs font-semibold uppercase tracking-[0.5em]">Welcome to</p>
+        <h1 className="display text-chrome mt-3 text-7xl leading-none sm:text-8xl">MXK</h1>
+        <p className="text-fog mt-2 text-sm uppercase tracking-[0.3em]">// MAKRAM</p>
 
         {/* Now Playing card */}
-        <div className="mt-9 w-full rounded-3xl border border-white/10 bg-ink-2/60 p-5 shadow-[0_36px_90px_-30px_rgba(79,124,255,0.5)] ring-1 ring-inset ring-white/5 backdrop-blur-2xl">
+        <div className="bg-ink-2/60 mt-9 w-full rounded-3xl border border-white/10 p-5 shadow-[0_36px_90px_-30px_rgba(79,124,255,0.5)] ring-1 ring-inset ring-white/5 backdrop-blur-2xl">
           <div className="flex items-center gap-2 text-left">
             <Equalizer active bars={5} className="h-3.5" />
-            <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-blue">Now Playing</p>
+            <p className="text-blue text-[10px] font-bold uppercase tracking-[0.28em]">Now Playing</p>
           </div>
           <div className="mt-4 flex items-center gap-4 text-left">
-            <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-ink-3">
-              {art ? <img src={art} alt="" className="h-full w-full object-cover" /> : <div className="flex h-full items-center justify-center text-fog">MXK</div>}
+            <div className="bg-ink-3 relative h-16 w-16 shrink-0 overflow-hidden rounded-xl">
+              {art ? (
+                <img src={art} alt="" className="h-full w-full object-cover" />
+              ) : (
+                <div className="text-fog flex h-full items-center justify-center">MXK</div>
+              )}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate font-display text-xl leading-tight text-chrome">{track?.title ?? "MXK"}</p>
-              <p className="truncate text-sm text-fog">
-                {track ? (track.featuredArtists || "MXK") : "Featured track"}
-              </p>
+              <p className="font-display text-chrome truncate text-xl leading-tight">{track?.title ?? "MXK"}</p>
+              <p className="text-fog truncate text-sm">{track ? track.featuredArtists || "MXK" : "Featured track"}</p>
             </div>
           </div>
 
           {/* Big circular Play */}
           <button
-            onClick={(e) => { e.stopPropagation(); enter(true); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              enter(true);
+            }}
             aria-label="Play & enter"
-            className="group relative mx-auto mt-6 flex h-20 w-20 items-center justify-center rounded-full bg-chrome text-ink shadow-[0_18px_50px_-12px_rgba(255,255,255,0.5)] transition hover:scale-105"
+            className="bg-chrome text-ink group relative mx-auto mt-6 flex h-20 w-20 items-center justify-center rounded-full shadow-[0_18px_50px_-12px_rgba(255,255,255,0.5)] transition hover:scale-105"
           >
-            <span className="absolute inset-0 rounded-full ring-2 ring-white/40 pulse" />
+            <span className="pulse absolute inset-0 rounded-full ring-2 ring-white/40" />
             <span className="ml-1 text-3xl">▶</span>
           </button>
-          <p className="mt-4 text-xs text-fog">{canPlay ? "Tap to play & enter" : "Tap to enter"}</p>
+          <p className="text-fog mt-4 text-xs">{canPlay ? "Tap to play & enter" : "Tap to enter"}</p>
         </div>
 
         <button
-          onClick={(e) => { e.stopPropagation(); enter(false); }}
-          className="mt-7 text-xs font-semibold uppercase tracking-[0.25em] text-fog/70 transition hover:text-chrome"
+          onClick={(e) => {
+            e.stopPropagation();
+            enter(false);
+          }}
+          className="text-fog/70 hover:text-chrome mt-7 text-xs font-semibold uppercase tracking-[0.25em] transition"
         >
           Enter without music
         </button>
@@ -128,13 +173,18 @@ export function EnterExperience() {
 // A few rising sparks for life on the splash (generated once).
 function Sparks() {
   const sparks = useMemo(
-    () => Array.from({ length: 16 }, () => ({ left: Math.random() * 100, size: 1 + Math.random() * 2, delay: Math.random() * 10, dur: 9 + Math.random() * 10 })),
-    []
+    () =>
+      Array.from({ length: 16 }, () => ({ left: Math.random() * 100, size: 1 + Math.random() * 2, delay: Math.random() * 10, dur: 9 + Math.random() * 10 })),
+    [],
   );
   return (
     <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden>
       {sparks.map((p, i) => (
-        <span key={i} className="particle" style={{ left: `${p.left}%`, width: p.size, height: p.size, animation: `floaty ${p.dur}s linear ${p.delay}s infinite` }} />
+        <span
+          key={i}
+          className="particle"
+          style={{ left: `${p.left}%`, width: p.size, height: p.size, animation: `floaty ${p.dur}s linear ${p.delay}s infinite` }}
+        />
       ))}
     </div>
   );

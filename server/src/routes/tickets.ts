@@ -18,7 +18,10 @@ ticketsRouter.get("/", async (req, res) => {
 // GET /api/tickets/summary  (admin) — totals per event (for the events list).
 ticketsRouter.get("/summary", async (_req, res) => {
   const rows = await prisma.ticketRequest.groupBy({
-    by: ["eventId"], where: { status: { not: "CANCELLED" } }, _sum: { quantity: true }, _count: { _all: true },
+    by: ["eventId"],
+    where: { status: { not: "CANCELLED" } },
+    _sum: { quantity: true },
+    _count: { _all: true },
   });
   res.json(rows.map((r) => ({ eventId: r.eventId, tickets: r._sum.quantity ?? 0, requests: r._count._all })));
 });

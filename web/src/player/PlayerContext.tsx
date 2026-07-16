@@ -40,7 +40,10 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     const audio = new Audio();
     audio.volume = volume;
     audioRef.current = audio;
-    const onTime = () => { setProgress(audio.duration ? audio.currentTime / audio.duration : 0); setDuration(audio.duration || 0); };
+    const onTime = () => {
+      setProgress(audio.duration ? audio.currentTime / audio.duration : 0);
+      setDuration(audio.duration || 0);
+    };
     const onEnd = () => setIndex((i) => (i + 1 < queueRef.current.length ? i + 1 : i));
     const onPlay = () => setIsPlaying(true);
     const onPause = () => setIsPlaying(false);
@@ -48,13 +51,18 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     audio.addEventListener("ended", onEnd);
     audio.addEventListener("play", onPlay);
     audio.addEventListener("pause", onPause);
-    return () => { audio.pause(); audio.src = ""; };
+    return () => {
+      audio.pause();
+      audio.src = "";
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Keep a ref of the queue for the 'ended' handler (avoids stale closure).
   const queueRef = useRef<Track[]>([]);
-  useEffect(() => { queueRef.current = queue; }, [queue]);
+  useEffect(() => {
+    queueRef.current = queue;
+  }, [queue]);
 
   // Load + play whenever the current track changes.
   useEffect(() => {
@@ -66,11 +74,20 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (audioRef.current) audioRef.current.volume = volume;
-    try { localStorage.setItem("mxk-volume", String(volume)); } catch { /* ignore */ }
+    try {
+      localStorage.setItem("mxk-volume", String(volume));
+    } catch {
+      /* ignore */
+    }
   }, [volume]);
 
   const value: PlayerValue = {
-    queue, current, isPlaying, progress, duration, volume,
+    queue,
+    current,
+    isPlaying,
+    progress,
+    duration,
+    volume,
     play: (tracks, i = 0) => {
       const playable = tracks.filter((t) => t.src);
       if (!playable.length) return;
@@ -84,9 +101,16 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     },
     next: () => setIndex((i) => (i + 1 < queue.length ? i + 1 : 0)),
     prev: () => setIndex((i) => (i > 0 ? i - 1 : i)),
-    seek: (f) => { const audio = audioRef.current; if (audio && audio.duration) audio.currentTime = f * audio.duration; },
+    seek: (f) => {
+      const audio = audioRef.current;
+      if (audio && audio.duration) audio.currentTime = f * audio.duration;
+    },
     setVolume: (v) => setVol(Math.max(0, Math.min(1, v))),
-    close: () => { audioRef.current?.pause(); setQueue([]); setIndex(0); },
+    close: () => {
+      audioRef.current?.pause();
+      setQueue([]);
+      setIndex(0);
+    },
   };
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

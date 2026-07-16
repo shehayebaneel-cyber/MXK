@@ -7,7 +7,20 @@ export const releasesRouter = Router();
 
 const clean = (b: Record<string, unknown>) => {
   const d: Record<string, unknown> = {};
-  for (const k of ["title", "type", "artwork", "featuredArtists", "description", "spotify", "appleMusic", "soundcloud", "youtube", "beatport", "previewUrl", "embedUrl"]) {
+  for (const k of [
+    "title",
+    "type",
+    "artwork",
+    "featuredArtists",
+    "description",
+    "spotify",
+    "appleMusic",
+    "soundcloud",
+    "youtube",
+    "beatport",
+    "previewUrl",
+    "embedUrl",
+  ]) {
     if (k in b) d[k] = b[k] == null ? null : String(b[k]);
   }
   if ("releaseDate" in b && b.releaseDate) d.releaseDate = new Date(String(b.releaseDate));

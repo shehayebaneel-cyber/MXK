@@ -45,11 +45,20 @@ app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
 // Wake the Neon connection on boot (serverless cold start) with a few retries.
 async function warmup(tries = 6) {
   for (let i = 1; i <= tries; i++) {
-    try { await prisma.$queryRaw`SELECT 1`; console.log("DB connected."); return; }
-    catch { console.error(`DB warmup ${i}/${tries} failed — retrying…`); await new Promise((r) => setTimeout(r, 1500)); }
+    try {
+      await prisma.$queryRaw`SELECT 1`;
+      console.log("DB connected.");
+      return;
+    } catch {
+      console.error(`DB warmup ${i}/${tries} failed — retrying…`);
+      await new Promise((r) => setTimeout(r, 1500));
+    }
   }
   console.error("DB still unreachable after warmup — the API will keep retrying per request.");
 }
 
 const port = Number(process.env.PORT) || 4300;
-app.listen(port, () => { console.log(`MXK API on :${port}`); warmup(); });
+app.listen(port, () => {
+  console.log(`MXK API on :${port}`);
+  warmup();
+});

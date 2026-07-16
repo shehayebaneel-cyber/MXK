@@ -9,7 +9,10 @@ export function ScrollToTop() {
   useEffect(() => {
     if (hash) {
       const el = document.getElementById(decodeURIComponent(hash.slice(1)));
-      if (el) { el.scrollIntoView({ behavior: "smooth" }); return; }
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+        return;
+      }
     }
     window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
   }, [pathname, hash]);

@@ -5,8 +5,15 @@ import { prisma } from "../db";
 export const contactRouter = Router();
 
 const INQUIRY_TYPES = [
-  "General Inquiry", "Live Performance", "DJ Booking", "Studio Production",
-  "Collaboration", "Remix Request", "Press / Media", "Brand Partnership", "Other",
+  "General Inquiry",
+  "Live Performance",
+  "DJ Booking",
+  "Studio Production",
+  "Collaboration",
+  "Remix Request",
+  "Press / Media",
+  "Brand Partnership",
+  "Other",
 ];
 
 // POST /api/contact  (public) — anyone reaches MXK (booking, collab, press, general).
@@ -20,9 +27,13 @@ contactRouter.post("/", async (req, res) => {
   const inquiryType = INQUIRY_TYPES.includes(String(b.inquiryType)) ? String(b.inquiryType) : "General Inquiry";
   const msg = await prisma.contactMessage.create({
     data: {
-      name, email, inquiryType,
-      phone: String(b.phone || ""), country: String(b.country || ""),
-      subject: String(b.subject || ""), message: String(b.message || ""),
+      name,
+      email,
+      inquiryType,
+      phone: String(b.phone || ""),
+      country: String(b.country || ""),
+      subject: String(b.subject || ""),
+      message: String(b.message || ""),
     },
   });
   // TODO: email notification (Resend/SMTP) — wire when credentials are provided.

@@ -4,9 +4,19 @@ import { ReactNode, useEffect, useRef } from "react";
 // Sets CSS vars (--rx/--ry/--sc/--tx/--ty/--lx/--ly) the styles read. Movement
 // is clamped small (premium, not dizzying) and returns smoothly on leave.
 export function Tilt({
-  children, className = "", maxRX = 4, maxRY = 6, scale = 1.02, lift = 0,
+  children,
+  className = "",
+  maxRX = 4,
+  maxRY = 6,
+  scale = 1.02,
+  lift = 0,
 }: {
-  children: ReactNode; className?: string; maxRX?: number; maxRY?: number; scale?: number; lift?: number;
+  children: ReactNode;
+  className?: string;
+  maxRX?: number;
+  maxRY?: number;
+  scale?: number;
+  lift?: number;
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -35,14 +45,25 @@ export function Tilt({
     };
     const reset = () => {
       cancelAnimationFrame(raf);
-      el.style.setProperty("--rx", "0deg"); el.style.setProperty("--ry", "0deg");
-      el.style.setProperty("--tx", "0"); el.style.setProperty("--ty", "0");
-      el.style.setProperty("--sc", "1"); el.style.setProperty("--ty2", "0");
+      el.style.setProperty("--rx", "0deg");
+      el.style.setProperty("--ry", "0deg");
+      el.style.setProperty("--tx", "0");
+      el.style.setProperty("--ty", "0");
+      el.style.setProperty("--sc", "1");
+      el.style.setProperty("--ty2", "0");
     };
     el.addEventListener("pointermove", onMove);
     el.addEventListener("pointerleave", reset);
-    return () => { el.removeEventListener("pointermove", onMove); el.removeEventListener("pointerleave", reset); cancelAnimationFrame(raf); };
+    return () => {
+      el.removeEventListener("pointermove", onMove);
+      el.removeEventListener("pointerleave", reset);
+      cancelAnimationFrame(raf);
+    };
   }, [maxRX, maxRY, scale, lift]);
 
-  return <div ref={ref} className={className}>{children}</div>;
+  return (
+    <div ref={ref} className={className}>
+      {children}
+    </div>
+  );
 }

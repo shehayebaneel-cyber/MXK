@@ -6,7 +6,7 @@ export function Equalizer({ active, bars = 5, className = "" }: { active: boolea
       {Array.from({ length: bars }).map((_, i) => (
         <span
           key={i}
-          className="eq-bar w-[3px] rounded-full bg-gradient-to-t from-blue to-purple"
+          className="eq-bar from-blue to-purple w-[3px] rounded-full bg-gradient-to-t"
           style={{
             height: "100%",
             animationDuration: `${0.6 + (i % 3) * 0.22}s`,

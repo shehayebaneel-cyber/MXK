@@ -6,8 +6,15 @@ import { useMeta } from "../lib/useMeta";
 import type { Settings } from "../types";
 
 const INQUIRY_TYPES = [
-  "General Inquiry", "Live Performance", "DJ Booking", "Studio Production",
-  "Collaboration", "Remix Request", "Press / Media", "Brand Partnership", "Other",
+  "General Inquiry",
+  "Live Performance",
+  "DJ Booking",
+  "Studio Production",
+  "Collaboration",
+  "Remix Request",
+  "Press / Media",
+  "Brand Partnership",
+  "Other",
 ];
 
 const SOCIAL: { key: keyof Settings; label: string }[] = [
@@ -19,8 +26,7 @@ const SOCIAL: { key: keyof Settings; label: string }[] = [
   { key: "youtube", label: "YouTube" },
 ];
 
-const field =
-  "w-full rounded-xl border border-line bg-ink-3 px-4 py-3 text-sm text-chrome placeholder:text-fog/60 outline-none transition focus:border-blue";
+const field = "w-full rounded-xl border border-line bg-ink-3 px-4 py-3 text-sm text-chrome placeholder:text-fog/60 outline-none transition focus:border-blue";
 const label = "mb-1.5 block text-xs font-semibold uppercase tracking-widest text-fog";
 
 export function Contact() {
@@ -31,12 +37,21 @@ export function Contact() {
   const [err, setErr] = useState("");
   const set = (k: keyof typeof form, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
-  useEffect(() => { api.get<Settings>("/api/settings").then(setSettings).catch(() => {}); }, []);
+  useEffect(() => {
+    api
+      .get<Settings>("/api/settings")
+      .then(setSettings)
+      .catch(() => {});
+  }, []);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!form.name.trim() || !form.email.trim()) { setErr("Name and email are required."); return; }
-    setState("sending"); setErr("");
+    if (!form.name.trim() || !form.email.trim()) {
+      setErr("Name and email are required.");
+      return;
+    }
+    setState("sending");
+    setErr("");
     try {
       await api.post("/api/contact", form);
       setState("done");
@@ -58,26 +73,27 @@ export function Contact() {
       <div className="mx-auto max-w-5xl px-6 pb-28 pt-28 sm:pt-32">
         {/* ---------- HERO ---------- */}
         <Reveal>
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-blue">Contact</p>
-          <h1 className="display mt-3 text-5xl text-chrome sm:text-6xl lg:text-7xl">Let's Create Something Together</h1>
-          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-fog">
-            Whether you're looking to book a performance, collaborate on a track, invite MXK to an event, or simply get
-            in touch — I'd love to hear from you.
+          <p className="text-blue text-sm font-semibold uppercase tracking-[0.3em]">Contact</p>
+          <h1 className="display text-chrome mt-3 text-5xl sm:text-6xl lg:text-7xl">Let's Create Something Together</h1>
+          <p className="text-fog mt-5 max-w-2xl text-lg leading-relaxed">
+            Whether you're looking to book a performance, collaborate on a track, invite MXK to an event, or simply get in touch — I'd love to hear from you.
           </p>
         </Reveal>
 
         {state === "done" ? (
           <Reveal>
-            <div className="mt-12 rounded-3xl border border-white/10 bg-ink-2/60 p-10 text-center shadow-[0_36px_90px_-30px_rgba(79,124,255,0.5)] ring-1 ring-inset ring-white/5 backdrop-blur-2xl">
-              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-blue to-purple text-3xl text-white">✓</div>
-              <h2 className="display mt-6 text-4xl text-chrome">Message Sent</h2>
-              <p className="mx-auto mt-4 max-w-md leading-relaxed text-fog">
-                Thank you for reaching out. Your message has been sent successfully, and I'll get back to you as soon as
-                possible.
+            <div className="bg-ink-2/60 mt-12 rounded-3xl border border-white/10 p-10 text-center shadow-[0_36px_90px_-30px_rgba(79,124,255,0.5)] ring-1 ring-inset ring-white/5 backdrop-blur-2xl">
+              <div className="from-blue to-purple mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br text-3xl text-white">✓</div>
+              <h2 className="display text-chrome mt-6 text-4xl">Message Sent</h2>
+              <p className="text-fog mx-auto mt-4 max-w-md leading-relaxed">
+                Thank you for reaching out. Your message has been sent successfully, and I'll get back to you as soon as possible.
               </p>
               <button
-                onClick={() => { setForm({ name: "", email: "", phone: "", country: "", subject: "", inquiryType: INQUIRY_TYPES[0], message: "", website: "" }); setState("idle"); }}
-                className="mt-8 rounded-full border border-line px-6 py-3 text-sm font-semibold text-chrome transition hover:border-chrome"
+                onClick={() => {
+                  setForm({ name: "", email: "", phone: "", country: "", subject: "", inquiryType: INQUIRY_TYPES[0], message: "", website: "" });
+                  setState("idle");
+                }}
+                className="border-line text-chrome hover:border-chrome mt-8 rounded-full border px-6 py-3 text-sm font-semibold transition"
               >
                 Send another message
               </button>
@@ -87,14 +103,26 @@ export function Contact() {
           <div className="mt-12 grid gap-8 lg:grid-cols-[1.4fr_1fr]">
             {/* ---------- FORM ---------- */}
             <Reveal>
-              <form onSubmit={submit} className="grid gap-4 rounded-3xl border border-line bg-ink-2/50 p-6 sm:grid-cols-2 sm:p-8">
+              <form onSubmit={submit} className="border-line bg-ink-2/50 grid gap-4 rounded-3xl border p-6 sm:grid-cols-2 sm:p-8">
                 {/* honeypot */}
-                <input type="text" tabIndex={-1} autoComplete="off" value={form.website} onChange={(e) => set("website", e.target.value)} className="hidden" aria-hidden />
+                <input
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={form.website}
+                  onChange={(e) => set("website", e.target.value)}
+                  className="hidden"
+                  aria-hidden
+                />
 
                 <div className="sm:col-span-2">
                   <label className={label}>Inquiry Type</label>
                   <select className={field} value={form.inquiryType} onChange={(e) => set("inquiryType", e.target.value)}>
-                    {INQUIRY_TYPES.map((t) => <option key={t} value={t} className="bg-ink-3">{t}</option>)}
+                    {INQUIRY_TYPES.map((t) => (
+                      <option key={t} value={t} className="bg-ink-3">
+                        {t}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -123,10 +151,10 @@ export function Contact() {
                   <textarea className={field} rows={6} placeholder="Tell me more…" value={form.message} onChange={(e) => set("message", e.target.value)} />
                 </div>
 
-                {err && <p className="text-sm text-red sm:col-span-2">{err}</p>}
+                {err && <p className="text-red text-sm sm:col-span-2">{err}</p>}
                 <button
                   disabled={state === "sending"}
-                  className="rounded-full bg-chrome px-8 py-3.5 text-sm font-semibold text-ink transition hover:bg-white disabled:opacity-60 sm:col-span-2"
+                  className="bg-chrome text-ink rounded-full px-8 py-3.5 text-sm font-semibold transition hover:bg-white disabled:opacity-60 sm:col-span-2"
                 >
                   {state === "sending" ? "Sending…" : "Send Message"}
                 </button>
@@ -137,12 +165,17 @@ export function Contact() {
             <Reveal delay={120}>
               <div className="space-y-6">
                 {socials.length > 0 && (
-                  <div className="rounded-3xl border border-line bg-ink-2/50 p-6">
-                    <p className="text-xs font-bold uppercase tracking-widest text-fog">Follow &amp; Listen</p>
+                  <div className="border-line bg-ink-2/50 rounded-3xl border p-6">
+                    <p className="text-fog text-xs font-bold uppercase tracking-widest">Follow &amp; Listen</p>
                     <div className="mt-4 grid grid-cols-2 gap-2.5">
                       {socials.map((s) => (
-                        <a key={s.key} href={settings![s.key]} target="_blank" rel="noreferrer"
-                          className="flex items-center gap-2 rounded-xl border border-line px-3 py-3 text-sm font-semibold text-chrome transition hover:border-chrome hover:bg-ink-3">
+                        <a
+                          key={s.key}
+                          href={settings![s.key]}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="border-line text-chrome hover:border-chrome hover:bg-ink-3 flex items-center gap-2 rounded-xl border px-3 py-3 text-sm font-semibold transition"
+                        >
                           <PlatformIcon name={s.label} className="h-4 w-4 shrink-0" /> {s.label}
                         </a>
                       ))}
@@ -151,35 +184,44 @@ export function Contact() {
                 )}
 
                 {hasBusiness && (
-                  <div className="rounded-3xl border border-line bg-ink-2/50 p-6">
-                    <p className="text-xs font-bold uppercase tracking-widest text-fog">Business Contact</p>
+                  <div className="border-line bg-ink-2/50 rounded-3xl border p-6">
+                    <p className="text-fog text-xs font-bold uppercase tracking-widest">Business Contact</p>
                     <ul className="mt-4 space-y-4 text-sm">
                       {settings?.bookingEmail && (
                         <li>
-                          <p className="text-xs uppercase tracking-widest text-fog/70">General</p>
-                          <a href={`mailto:${settings.bookingEmail}`} className="text-chrome transition hover:text-blue">{settings.bookingEmail}</a>
+                          <p className="text-fog/70 text-xs uppercase tracking-widest">General</p>
+                          <a href={`mailto:${settings.bookingEmail}`} className="text-chrome hover:text-blue transition">
+                            {settings.bookingEmail}
+                          </a>
                         </li>
                       )}
                       {settings?.managementEmail && (
                         <li>
-                          <p className="text-xs uppercase tracking-widest text-fog/70">Management{settings.managementName ? ` · ${settings.managementName}` : ""}</p>
-                          <a href={`mailto:${settings.managementEmail}`} className="text-chrome transition hover:text-blue">{settings.managementEmail}</a>
+                          <p className="text-fog/70 text-xs uppercase tracking-widest">
+                            Management{settings.managementName ? ` · ${settings.managementName}` : ""}
+                          </p>
+                          <a href={`mailto:${settings.managementEmail}`} className="text-chrome hover:text-blue transition">
+                            {settings.managementEmail}
+                          </a>
                         </li>
                       )}
                       {settings?.bookingAgentEmail && (
                         <li>
-                          <p className="text-xs uppercase tracking-widest text-fog/70">Booking Agent{settings.bookingAgentName ? ` · ${settings.bookingAgentName}` : ""}</p>
-                          <a href={`mailto:${settings.bookingAgentEmail}`} className="text-chrome transition hover:text-blue">{settings.bookingAgentEmail}</a>
+                          <p className="text-fog/70 text-xs uppercase tracking-widest">
+                            Booking Agent{settings.bookingAgentName ? ` · ${settings.bookingAgentName}` : ""}
+                          </p>
+                          <a href={`mailto:${settings.bookingAgentEmail}`} className="text-chrome hover:text-blue transition">
+                            {settings.bookingAgentEmail}
+                          </a>
                         </li>
                       )}
                     </ul>
                   </div>
                 )}
 
-                <div className="rounded-3xl border border-line bg-gradient-to-br from-blue/10 to-purple/10 p-6">
-                  <p className="text-sm leading-relaxed text-fog">
-                    Every message reaches MXK directly. For time-sensitive bookings, mention your event date in the
-                    message and I'll prioritize it.
+                <div className="border-line from-blue/10 to-purple/10 rounded-3xl border bg-gradient-to-br p-6">
+                  <p className="text-fog text-sm leading-relaxed">
+                    Every message reaches MXK directly. For time-sensitive bookings, mention your event date in the message and I'll prioritize it.
                   </p>
                 </div>
               </div>

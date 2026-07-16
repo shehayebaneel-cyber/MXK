@@ -13,7 +13,8 @@ export function AdminLogin() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    setBusy(true); setErr("");
+    setBusy(true);
+    setErr("");
     try {
       const r = await api.post<{ token: string }>("/api/admin/login", { email, password });
       setToken(r.token);
@@ -29,14 +30,17 @@ export function AdminLogin() {
   return (
     <div className="flex min-h-screen items-center justify-center px-6">
       <div className="glow absolute inset-0 -z-10 opacity-40" />
-      <form onSubmit={submit} className="w-full max-w-sm rounded-2xl border border-line bg-ink-2 p-8">
-        <p className="display text-3xl text-chrome">MXK</p>
-        <p className="mt-1 text-sm text-fog">Admin dashboard</p>
+      <form onSubmit={submit} className="border-line bg-ink-2 w-full max-w-sm rounded-2xl border p-8">
+        <p className="display text-chrome text-3xl">MXK</p>
+        <p className="text-fog mt-1 text-sm">Admin dashboard</p>
         <div className="mt-6 space-y-3">
           <input className={field} type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} autoFocus />
           <input className={field} type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          {err && <p className="text-sm text-red">{err}</p>}
-          <button disabled={busy} className="w-full rounded-lg bg-chrome px-4 py-3 text-sm font-semibold text-ink transition hover:bg-white disabled:opacity-60">
+          {err && <p className="text-red text-sm">{err}</p>}
+          <button
+            disabled={busy}
+            className="bg-chrome text-ink w-full rounded-lg px-4 py-3 text-sm font-semibold transition hover:bg-white disabled:opacity-60"
+          >
             {busy ? "Signing in…" : "Sign in"}
           </button>
         </div>

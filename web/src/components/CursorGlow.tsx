@@ -16,7 +16,10 @@ export function CursorGlow() {
       });
     };
     window.addEventListener("pointermove", onMove, { passive: true });
-    return () => { window.removeEventListener("pointermove", onMove); cancelAnimationFrame(raf); };
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      cancelAnimationFrame(raf);
+    };
   }, []);
   return <div ref={ref} className="cursor-glow" aria-hidden />;
 }

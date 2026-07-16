@@ -9,7 +9,12 @@ type Overview = { releases: number; events: number; messages: number; unreadMess
 export function AdminDashboard() {
   useMeta("Dashboard — MXK Admin");
   const [o, setO] = useState<Overview | null>(null);
-  useEffect(() => { api.get<Overview>("/api/admin/overview").then(setO).catch(() => {}); }, []);
+  useEffect(() => {
+    api
+      .get<Overview>("/api/admin/overview")
+      .then(setO)
+      .catch(() => {});
+  }, []);
 
   const cards = [
     { label: "Releases", value: o?.releases, to: "/admin/releases" },
@@ -23,20 +28,25 @@ export function AdminDashboard() {
       <PageTitle title="Dashboard" />
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {cards.map((c) => (
-          <Link key={c.label} to={c.to} className="rounded-2xl border border-line bg-ink-2 p-5 transition hover:border-blue">
-            <p className="text-sm text-fog">{c.label}</p>
-            <p className={`mt-1 display text-4xl ${c.alert ? "text-blue" : "text-chrome"}`}>{c.value ?? "—"}</p>
+          <Link key={c.label} to={c.to} className="border-line bg-ink-2 hover:border-blue rounded-2xl border p-5 transition">
+            <p className="text-fog text-sm">{c.label}</p>
+            <p className={`display mt-1 text-4xl ${c.alert ? "text-blue" : "text-chrome"}`}>{c.value ?? "—"}</p>
           </Link>
         ))}
       </div>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {[
-          ["Add a release", "/admin/releases"], ["Add a show", "/admin/events"],
-          ["Add archive media", "/admin/archive"], ["Edit homepage & bio", "/admin/settings"],
-          ["View messages", "/admin/messages"], ["Open live site ↗", "/"],
+          ["Add a release", "/admin/releases"],
+          ["Add a show", "/admin/events"],
+          ["Add archive media", "/admin/archive"],
+          ["Edit homepage & bio", "/admin/settings"],
+          ["View messages", "/admin/messages"],
+          ["Open live site ↗", "/"],
         ].map(([label, to]) => (
-          <Link key={label} to={to} className="rounded-xl border border-line bg-ink-2 px-5 py-4 text-sm font-semibold text-chrome transition hover:border-blue">{label}</Link>
+          <Link key={label} to={to} className="border-line bg-ink-2 text-chrome hover:border-blue rounded-xl border px-5 py-4 text-sm font-semibold transition">
+            {label}
+          </Link>
         ))}
       </div>
     </div>

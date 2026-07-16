@@ -15,7 +15,9 @@
   --font-sans: "Inter", system-ui, sans-serif;
 }
 
-* { -webkit-tap-highlight-color: transparent; }
+* {
+  -webkit-tap-highlight-color: transparent;
+}
 
 html {
   scroll-behavior: smooth;
@@ -37,39 +39,87 @@ body {
   background:
     radial-gradient(60% 50% at 20% 0%, rgba(79, 124, 255, 0.18), transparent 70%),
     radial-gradient(50% 50% at 90% 20%, rgba(154, 92, 255, 0.14), transparent 70%),
-    radial-gradient(40% 40% at 60% 100%, rgba(255, 59, 87, 0.10), transparent 70%);
+    radial-gradient(40% 40% at 60% 100%, rgba(255, 59, 87, 0.1), transparent 70%);
 }
 
-.display { font-family: var(--font-display); letter-spacing: 0.01em; line-height: 0.92; }
+.display {
+  font-family: var(--font-display);
+  letter-spacing: 0.01em;
+  line-height: 0.92;
+}
 
 /* Scroll-reveal — elements fade/rise in when they enter the viewport */
-.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
-.reveal.in { opacity: 1; transform: none; }
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.in {
+  opacity: 1;
+  transform: none;
+}
 
 /* Hide scrollbars on horizontal rails */
-.no-bar { scrollbar-width: none; }
-.no-bar::-webkit-scrollbar { display: none; }
+.no-bar {
+  scrollbar-width: none;
+}
+.no-bar::-webkit-scrollbar {
+  display: none;
+}
 
 /* Keep this in @layer base so text-* color utilities (e.g. text-ink on a
    white button) still win over it — an un-layered rule would override them. */
 @layer base {
-  a { color: inherit; text-decoration: none; }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 }
 
-@keyframes pulse-ring { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
-.pulse { animation: pulse-ring 2.4s ease-in-out infinite; }
+@keyframes pulse-ring {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}
+.pulse {
+  animation: pulse-ring 2.4s ease-in-out infinite;
+}
 
-::selection { background: rgba(79, 124, 255, 0.35); color: #fff; }
+::selection {
+  background: rgba(79, 124, 255, 0.35);
+  color: #fff;
+}
 
 /* ---------- Hero atmosphere ---------- */
 /* Slow-drifting aurora blobs */
 @keyframes drift {
-  0%   { transform: translate3d(0, 0, 0) scale(1); }
-  33%  { transform: translate3d(6%, -4%, 0) scale(1.15); }
-  66%  { transform: translate3d(-4%, 5%, 0) scale(0.95); }
-  100% { transform: translate3d(0, 0, 0) scale(1); }
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(6%, -4%, 0) scale(1.15);
+  }
+  66% {
+    transform: translate3d(-4%, 5%, 0) scale(0.95);
+  }
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
 }
-.aurora { position: absolute; border-radius: 9999px; filter: blur(90px); will-change: transform; }
+.aurora {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  will-change: transform;
+}
 
 /* Fine film grain (cheap SVG noise) */
 .grain {
@@ -79,52 +129,165 @@ body {
 
 /* Floating particles rising through the hero */
 @keyframes floaty {
-  0%   { transform: translateY(0); opacity: 0; }
-  15%  { opacity: 0.7; }
-  85%  { opacity: 0.5; }
-  100% { transform: translateY(-70vh); opacity: 0; }
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.7;
+  }
+  85% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateY(-70vh);
+    opacity: 0;
+  }
 }
-.particle { position: absolute; bottom: -10px; border-radius: 9999px; background: #cdd6ff; will-change: transform, opacity; }
+.particle {
+  position: absolute;
+  bottom: -10px;
+  border-radius: 9999px;
+  background: #cdd6ff;
+  will-change: transform, opacity;
+}
 
 /* Entrance: rise + fade, staggered via inline animation-delay */
-@keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
-.rise-in { opacity: 0; animation: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rise-in {
+  opacity: 0;
+  animation: rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
 
-@keyframes scaleIn { from { opacity: 0; transform: scale(0.96) translateY(20px); } to { opacity: 1; transform: none; } }
-.scale-in { opacity: 0; animation: scaleIn 1s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.scale-in {
+  opacity: 0;
+  animation: scaleIn 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
 
-@keyframes navIn { from { opacity: 0; transform: translateY(-100%); } to { opacity: 1; transform: none; } }
-.nav-in { animation: navIn 0.6s ease forwards; }
+@keyframes navIn {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.nav-in {
+  animation: navIn 0.6s ease forwards;
+}
 
 /* Light sweep across the title */
-@keyframes sweep { 0% { background-position: 150% 0; } 100% { background-position: -50% 0; } }
+@keyframes sweep {
+  0% {
+    background-position: 150% 0;
+  }
+  100% {
+    background-position: -50% 0;
+  }
+}
 .sweep {
   background: linear-gradient(100deg, #f4f4f6 35%, #b9c6ff 48%, #ffffff 52%, #f4f4f6 65%);
   background-size: 250% 100%;
-  -webkit-background-clip: text; background-clip: text; color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   animation: sweep 7s ease-in-out 1.2s infinite;
 }
 
 /* ---------- 3D / depth ---------- */
 /* Interactive tilt (JS sets --rx/--ry/--sc/--tx/--ty/--lx/--ly) */
-.tilt { transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(var(--sc, 1)); transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); transform-style: preserve-3d; }
-.tilt-sheen { position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity 0.35s; mix-blend-mode: screen; background: radial-gradient(circle at var(--lx, 50%) var(--ly, 50%), rgba(255, 255, 255, 0.18), transparent 45%); }
-.tilt:hover .tilt-sheen { opacity: 1; }
+.tilt {
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(var(--sc, 1));
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transform-style: preserve-3d;
+}
+.tilt-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s;
+  mix-blend-mode: screen;
+  background: radial-gradient(circle at var(--lx, 50%) var(--ly, 50%), rgba(255, 255, 255, 0.18), transparent 45%);
+}
+.tilt:hover .tilt-sheen {
+  opacity: 1;
+}
 /* A layer that floats further toward the viewer than its parent */
-.pop { transform: translate3d(calc(var(--tx, 0) * 16px), calc(var(--ty, 0) * 16px), 60px); transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); will-change: transform; }
+.pop {
+  transform: translate3d(calc(var(--tx, 0) * 16px), calc(var(--ty, 0) * 16px), 60px);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
 
-@keyframes floatY { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-.float-slow { animation: floatY 6.5s ease-in-out infinite; }
+@keyframes floatY {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+.float-slow {
+  animation: floatY 6.5s ease-in-out infinite;
+}
 
 /* CSS equalizer bars */
-@keyframes eq { 0%, 100% { transform: scaleY(0.32); } 50% { transform: scaleY(1); } }
-.eq-bar { transform-origin: bottom; animation: eq 0.8s ease-in-out infinite; }
+@keyframes eq {
+  0%,
+  100% {
+    transform: scaleY(0.32);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+.eq-bar {
+  transform-origin: bottom;
+  animation: eq 0.8s ease-in-out infinite;
+}
 
 /* Cursor light (desktop) — JS sets --cx/--cy */
-.cursor-glow { position: fixed; inset: 0; z-index: 25; pointer-events: none; mix-blend-mode: screen; background: radial-gradient(360px circle at var(--cx, -300px) var(--cy, -300px), rgba(79, 124, 255, 0.10), rgba(154, 92, 255, 0.05) 42%, transparent 72%); }
+.cursor-glow {
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background: radial-gradient(360px circle at var(--cx, -300px) var(--cy, -300px), rgba(79, 124, 255, 0.1), rgba(154, 92, 255, 0.05) 42%, transparent 72%);
+}
 
 /* 3D music card (JS sets --rx/--ry/--sc; hover lifts via --ty2) */
-.card3d { transform: perspective(800px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty2, 0)) scale(var(--sc, 1)); transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s; transform-style: preserve-3d; }
+.card3d {
+  transform: perspective(800px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty2, 0)) scale(var(--sc, 1));
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.45s;
+  transform-style: preserve-3d;
+}
 
 /* ---------- Print (EPK "Download / Print") ---------- */
 /* The site is near-white text on near-black; browsers strip backgrounds when
@@ -141,16 +304,54 @@ body {
     --color-blue: #2f56c9;
     --color-purple: #6d3fc4;
   }
-  html, body { background: #fff !important; color: #111114 !important; }
-  .cursor-glow { display: none !important; }
-  .glow, .grain { background: none !important; }
-  .reveal, .rise-in, .scale-in { opacity: 1 !important; transform: none !important; animation: none !important; }
-  .sweep { animation: none; background: none; -webkit-background-clip: initial; background-clip: initial; color: var(--color-chrome); }
+  html,
+  body {
+    background: #fff !important;
+    color: #111114 !important;
+  }
+  .cursor-glow {
+    display: none !important;
+  }
+  .glow,
+  .grain {
+    background: none !important;
+  }
+  .reveal,
+  .rise-in,
+  .scale-in {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+  .sweep {
+    animation: none;
+    background: none;
+    -webkit-background-clip: initial;
+    background-clip: initial;
+    color: var(--color-chrome);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .aurora, .particle, .sweep, .float-slow, .eq-bar { animation: none !important; }
-  .rise-in, .scale-in { animation: none !important; opacity: 1 !important; transform: none !important; }
-  .tilt, .pop, .card3d { transform: none !important; }
-  .cursor-glow { display: none; }
+  .aurora,
+  .particle,
+  .sweep,
+  .float-slow,
+  .eq-bar {
+    animation: none !important;
+  }
+  .rise-in,
+  .scale-in {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .tilt,
+  .pop,
+  .card3d {
+    transform: none !important;
+  }
+  .cursor-glow {
+    display: none;
+  }
 }

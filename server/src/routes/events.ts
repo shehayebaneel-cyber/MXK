@@ -79,14 +79,16 @@ eventsRouter.post("/:slug/tickets", async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       customer_email: email,
-      line_items: [{
-        quantity,
-        price_data: {
-          currency: "cad",
-          unit_amount: Math.round(event.ticketPrice * 100),
-          product_data: { name: `${event.title} — Ticket`, description: [event.venue, event.city].filter(Boolean).join(", ") || undefined },
+      line_items: [
+        {
+          quantity,
+          price_data: {
+            currency: "cad",
+            unit_amount: Math.round(event.ticketPrice * 100),
+            product_data: { name: `${event.title} — Ticket`, description: [event.venue, event.city].filter(Boolean).join(", ") || undefined },
+          },
         },
-      }],
+      ],
       success_url: `${base}/live/${event.slug}?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${base}/live/${event.slug}?ticket_canceled=1`,
       metadata: { ticketId: String(ticket.id), reference, eventId: String(event.id) },
@@ -103,7 +105,9 @@ eventsRouter.post("/", requireAdmin, async (req, res) => {
   if (!b.title) return res.status(400).json({ error: "Title is required." });
   let slug = slugify(String(b.slug || b.title));
   while (await prisma.event.findUnique({ where: { slug } })) slug = `${slug}-${Math.floor(Math.random() * 900 + 100)}`;
-  const event = await prisma.event.create({ data: { slug, title: String(b.title), date: b.date ? new Date(String(b.date)) : new Date(), ...clean(b) } as never });
+  const event = await prisma.event.create({
+    data: { slug, title: String(b.title), date: b.date ? new Date(String(b.date)) : new Date(), ...clean(b) } as never,
+  });
   res.status(201).json(outEvent(event));
 });
 

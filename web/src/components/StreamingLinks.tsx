@@ -15,8 +15,13 @@ export function StreamingLinks({ release, size = "md" }: { release: Release; siz
   return (
     <div className="flex flex-wrap gap-2">
       {links.map((p) => (
-        <a key={p.key} href={String(release[p.key])} target="_blank" rel="noreferrer"
-          className={`rounded-full border border-line font-semibold text-chrome transition ${pad} ${p.color}`}>
+        <a
+          key={p.key}
+          href={String(release[p.key])}
+          target="_blank"
+          rel="noreferrer"
+          className={`border-line text-chrome rounded-full border font-semibold transition ${pad} ${p.color}`}
+        >
           {p.label} ↗
         </a>
       ))}

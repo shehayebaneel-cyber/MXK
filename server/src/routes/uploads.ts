@@ -6,7 +6,16 @@ import { prisma } from "../db";
 // Media stored IN the database so it survives redeploys (host disk is ephemeral).
 const IMAGE_EXT: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/gif": "gif", "image/avif": "avif" };
 // Short audio previews (30–60s clips / short tracks) for the player.
-const AUDIO_EXT: Record<string, string> = { "audio/mpeg": "mp3", "audio/mp3": "mp3", "audio/mp4": "m4a", "audio/x-m4a": "m4a", "audio/aac": "aac", "audio/ogg": "ogg", "audio/wav": "wav", "audio/x-wav": "wav" };
+const AUDIO_EXT: Record<string, string> = {
+  "audio/mpeg": "mp3",
+  "audio/mp3": "mp3",
+  "audio/mp4": "m4a",
+  "audio/x-m4a": "m4a",
+  "audio/aac": "aac",
+  "audio/ogg": "ogg",
+  "audio/wav": "wav",
+  "audio/x-wav": "wav",
+};
 const IMAGE_MAX = 8 * 1024 * 1024;
 const AUDIO_MAX = 10 * 1024 * 1024;
 

@@ -16,7 +16,7 @@
   <!-- M X K drawn as geometric strokes (no font dependency) -->
   <g fill="none" stroke-width="8" stroke-linecap="square" stroke-linejoin="miter">
     <path d="M14 64 V32 L22 52 L30 32 V64" stroke="#f4f4f6"/>
-    <path d="M40 32 L56 64 M56 32 L40 64" stroke="#4f7cff"/>
+    <path d="M40 32 L56 64 M56 32 L40 64" stroke="#8caaff" stroke-width="10"/>
     <path d="M66 32 V64 M82 32 L66 49 L82 64" stroke="#f4f4f6"/>
   </g>
 </svg>

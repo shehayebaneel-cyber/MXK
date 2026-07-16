@@ -68,7 +68,7 @@ export function EnterExperience() {
       role="dialog"
       aria-label="Enter MXK"
       onClick={() => enter(true)}
-      className={`fixed inset-0 z-[60] flex flex-col items-center justify-center overflow-hidden bg-ink px-6 transition-opacity duration-[600ms] ${leaving ? "pointer-events-none opacity-0" : "opacity-100"}`}
+      className={`fixed inset-0 z-[60] flex flex-col items-center justify-center overflow-hidden bg-ink px-6 transition-opacity duration-[600ms] print:hidden ${leaving ? "pointer-events-none opacity-0" : "opacity-100"}`}
     >
       {/* Living background — reuses the hero atmosphere */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">

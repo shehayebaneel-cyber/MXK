@@ -10,7 +10,7 @@ export function FloatingPlayer() {
   const art = mediaUrl(p.current.artwork) || "";
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50 px-3 pb-3">
+    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50 px-3 pb-3 print:hidden">
       <div className="pointer-events-auto mx-auto flex max-w-2xl items-center gap-3 rounded-2xl border border-white/10 bg-ink-2/70 px-3 py-2.5 shadow-[0_24px_70px_-18px_rgba(79,124,255,0.45)] ring-1 ring-inset ring-white/5 backdrop-blur-2xl sm:gap-4 sm:px-5">
         <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-lg sm:h-12 sm:w-12">
           {art ? <img src={art} alt="" className="h-full w-full object-cover" /> : <div className="h-full w-full bg-ink-3" />}

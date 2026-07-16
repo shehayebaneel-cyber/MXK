@@ -126,6 +126,28 @@ body {
 /* 3D music card (JS sets --rx/--ry/--sc; hover lifts via --ty2) */
 .card3d { transform: perspective(800px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty2, 0)) scale(var(--sc, 1)); transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.45s; transform-style: preserve-3d; }
 
+/* ---------- Print (EPK "Download / Print") ---------- */
+/* The site is near-white text on near-black; browsers strip backgrounds when
+   printing, which yields a blank white page. Flip the palette to dark-on-white
+   and drop the screen-only atmosphere so the EPK prints as a clean one-pager. */
+@media print {
+  :root {
+    --color-ink: #ffffff;
+    --color-ink-2: #ffffff;
+    --color-ink-3: #ffffff;
+    --color-line: #c9c9d2;
+    --color-fog: #3f3f46;
+    --color-chrome: #111114;
+    --color-blue: #2f56c9;
+    --color-purple: #6d3fc4;
+  }
+  html, body { background: #fff !important; color: #111114 !important; }
+  .cursor-glow { display: none !important; }
+  .glow, .grain { background: none !important; }
+  .reveal, .rise-in, .scale-in { opacity: 1 !important; transform: none !important; animation: none !important; }
+  .sweep { animation: none; background: none; -webkit-background-clip: initial; background-clip: initial; color: var(--color-chrome); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .aurora, .particle, .sweep, .float-slow, .eq-bar { animation: none !important; }
   .rise-in, .scale-in { animation: none !important; opacity: 1 !important; transform: none !important; }

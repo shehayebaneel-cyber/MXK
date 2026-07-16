@@ -22,13 +22,13 @@ export function EPK() {
   ] as const).filter(([, h]) => h) : [];
 
   return (
-    <div className="mx-auto max-w-4xl px-6 pb-28 pt-28 sm:pt-32">
+    <div className="mx-auto max-w-4xl px-6 pb-28 pt-28 sm:pt-32 print:pb-0 print:pt-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.3em] text-blue">Press Kit</p>
           <h1 className="display mt-3 text-6xl text-chrome sm:text-7xl">EPK</h1>
         </div>
-        <button onClick={() => window.print()} className="rounded-full bg-chrome px-6 py-3 text-sm font-semibold text-ink transition hover:bg-white">Download / Print</button>
+        <button onClick={() => window.print()} className="rounded-full bg-chrome px-6 py-3 text-sm font-semibold text-ink transition hover:bg-white print:hidden">Download / Print</button>
       </div>
 
       <div className="mt-10 grid gap-4 sm:grid-cols-2">
